@@ -1,16 +1,25 @@
 {
-    "name": "yii2/template",
+    "name": "yii2-extensions/road-runner",
     "type": "library",
-    "description": "_____",
+    "description": "Yii2 Road Runner runtime.",
     "keywords": [
-        "_____"
+        "yii2-extension",
+        "road-runner",
+        "runtime"
     ],
     "license": "BSD-3-Clause",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": ">=8.1",
-        "yiisoft/yii2": "^2.2"
+        "httpsoft/http-message": "^1.1",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0",
+        "spiral/roadrunner": "^2024.3.0",
+        "spiral/roadrunner-http": "^v3.0.0",
+        "spiral/roadrunner-worker": "^3.0.0",
+        "symfony/runtime": "^7.3",
+        "yii2-extensions/psr-bridge": "^0.1@dev"
     },
     "require-dev": {
         "maglnet/composer-require-checker": "^4.1",
@@ -23,12 +32,12 @@
     },
     "autoload": {
         "psr-4": {
-            "yii\\template\\": "src"
+            "yii2\\extensions\\roadrunner\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "yii\\template\\tests\\": "tests"
+            "yii2\\extensions\\roadrunner\\tests\\": "tests"
         }
     },
     "extra": {
@@ -40,6 +49,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true,
+            "symfony/runtime": true,
             "yiisoft/yii2-composer": true
         }
     },
