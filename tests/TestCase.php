@@ -51,7 +51,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @phpstan-param array<string, mixed> $config
+     * @phpstan-param array{
+     *   id?: string,
+     *   basePath?: string,
+     *   components?: array<string, array<string, mixed>>,
+     *   container?: array{definitions?: array<string, mixed>},
+     *   runtimePath?: string,
+     *   vendorPath?: string
+     * } $config
      */
     protected function statelessApplication($config = []): StatelessApplication
     {

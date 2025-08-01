@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace yii2\extensions\roadrunner;
 
-use JsonException;
 use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Throwable;
 use yii\base\InvalidConfigException;
 use yii\console\ExitCode;
 use yii\di\NotInstantiableException;
 use yii2\extensions\psrbridge\http\StatelessApplication;
+
+use function sprintf;
 
 /**
  * RoadRunner runtime integration for Yii2 applications.
@@ -56,8 +57,6 @@ final class RoadRunner
      * and emits PSR-7 responses. Automatically shuts down the worker if the application state is clean after handling
      * a request. Exceptions are caught and reported to the RoadRunner worker for error handling.
      *
-     * @throws JsonException if a JSON encoding or decoding error occurs during request processing.
-     *
      * @return int Exit code indicating successful execution ({@see ExitCode::OK}).
      *
      * Usage example:
@@ -76,7 +75,16 @@ final class RoadRunner
                     $this->worker->getWorker()->stop();
                 }
             } catch (Throwable $e) {
-                $this->worker->getWorker()->error((string) $e);
+                $error = sprintf(
+                    "['%s'] '%s' in '%s:%d'\nStack trace:\n'%s'",
+                    $e::class,
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e->getTraceAsString(),
+                );
+
+                $this->worker->getWorker()->error($error);
             }
         }
 
