@@ -2,7 +2,7 @@
     <a href="https://github.com/yii2-extensions/road-runner" target="_blank">
         <img src="https://www.yiiframework.com/image/yii_logo_light.svg" alt="Yii Framework">
     </a>
-    <h1 align="center">Extension template</h1>
+    <h1 align="center">Extension for Road Runner</h1>
     <br>
 </p>
 
