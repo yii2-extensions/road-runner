@@ -38,10 +38,10 @@ composer update
 ### Install RoadRunner binary
 
 ```bash
-# download the roadRunner binary
+# download the RoadRunner binary
 vendor/bin/rr get
 
-# or download manually from gitHub releases
+# or download manually from GitHub releases
 curl -sSL https://github.com/roadrunner-server/roadrunner/releases/latest/download/roadrunner-linux-amd64.tar.gz | tar -xz
 ```
 
