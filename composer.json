@@ -28,7 +28,6 @@
         "phpstan/phpstan-strict-rules": "^2.0.3",
         "phpunit/phpunit": "^10.5",
         "rector/rector": "^2.1",
-        "symfony/process": "^7.0",
         "symplify/easy-coding-standard": "^12.5",
         "yii2-extensions/phpstan": "^0.3"
     },
