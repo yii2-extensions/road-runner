@@ -15,12 +15,12 @@ on:
       - '.gitignore'
       - '.gitattributes'
 
-name: build
+name: mutation test
 
 jobs:
-  phpunit:
-    uses: php-forge/actions/.github/workflows/phpunit.yml@main
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  mutation:
+    uses: php-forge/actions/.github/workflows/infection.yml@main
     with:
-      extensions: sockets
+      phpstan: true
+    secrets:
+      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

@@ -23,6 +23,7 @@
         "yiisoft/yii2": "^2.0.53|^22"
     },
     "require-dev": {
+        "infection/infection": "^0.27|^0.30",        
         "httpsoft/http-message": "^1.1",
         "maglnet/composer-require-checker": "^4.1",
         "phpstan/extension-installer": "^1.4",
