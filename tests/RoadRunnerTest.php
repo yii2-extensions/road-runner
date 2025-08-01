@@ -7,6 +7,7 @@ namespace yii2\extensions\roadrunner\tests;
 use Exception;
 use HttpSoft\Message\{ServerRequest, Uri};
 use PHPUnit\Framework\Attributes\Group;
+use Psr\Http\Message\ResponseInterface;
 use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunner\WorkerInterface;
 use yii\base\InvalidConfigException;
@@ -110,6 +111,10 @@ final class RoadRunnerTest extends TestCase
                 $request,
                 null,
             );
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->with(self::isInstanceOf(ResponseInterface::class));
 
         $app = $this->statelessApplication();
 
