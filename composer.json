@@ -51,6 +51,7 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
+            "infection/extension-installer": true,
             "phpstan/extension-installer": true,
             "symfony/runtime": true,
             "yiisoft/yii2-composer": true
