@@ -5,35 +5,21 @@ declare(strict_types=1);
 namespace yii2\extensions\roadrunner\tests;
 
 use Exception;
-use HttpSoft\Message\Response;
-use HttpSoft\Message\ServerRequest;
-use HttpSoft\Message\Stream;
-use HttpSoft\Message\Uri;
-use PhpParser\Node\Expr\Throw_;
+use HttpSoft\Message\{ServerRequest, Uri};
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\MockObject;
-use RuntimeException;
 use Spiral\RoadRunner\Http\PSR7Worker;
-use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Spiral\RoadRunner\WorkerInterface;
 use yii\base\InvalidConfigException;
 use yii\console\ExitCode;
-use yii\di\Container;
 use yii\di\NotInstantiableException;
-use yii\web\ErrorHandler;
-use yii\web\UrlManager;
-use yii2\extensions\psrbridge\http\StatelessApplication;
 use yii2\extensions\roadrunner\RoadRunner;
-use yii2\extensions\roadrunner\tests\TestCase;
 
-use function ob_get_level;
 use function ob_end_clean;
+use function ob_get_level;
 
 #[Group('roadrunner')]
 final class RoadRunnerTest extends TestCase
 {
-
-
     protected function tearDown(): void
     {
         $level = ob_get_level();
@@ -43,85 +29,6 @@ final class RoadRunnerTest extends TestCase
         }
 
         parent::tearDown();
-    }
-
-    /**
-     * @throws InvalidConfigException if the configuration is invalid or incomplete.
-     * @throws NotInstantiableException if a class or service can't be instantiated.
-     */
-    public function testRunMethodReturnsExitCodeOkWhenWorkerReturnsNull(): void
-    {
-        $this->worker = $this->createMock(WorkerInterface::class);
-        $this->psr7Worker = $this->createPartialMock(
-            PSR7Worker::class,
-            [
-                'waitRequest',
-                'respond',
-                'getWorker'
-            ],
-        );
-        $this->psr7Worker
-            ->method('getWorker')
-            ->willReturn($this->worker);
-        $this->psr7Worker
-            ->expects(self::once())
-            ->method('waitRequest')
-            ->willReturn(null);
-
-        $app = $this->statelessApplication();
-
-        $roadRunner = new RoadRunner($app);
-        $result = $roadRunner->run();
-
-        self::assertSame(
-            ExitCode::OK,
-            $result,
-            "RoadRunner 'run()' method should return 'ExitCode::OK' when worker returns 'null' indicating no more " .
-            'requests.',
-        );
-    }
-
-    public function testRunMethodHandlesSingleRequestSuccessfully(): void
-    {
-        $request = new ServerRequest(
-            serverParams: [
-                'REQUEST_METHOD' => 'GET',
-                'REQUEST_URI' => '/site/index',
-            ],
-            method: 'GET',
-            uri: new Uri('http://localhost/'),
-        );
-
-        $this->worker = $this->createMock(WorkerInterface::class);
-        $this->psr7Worker = $this->createPartialMock(
-            PSR7Worker::class,
-            [
-                'waitRequest',
-                'respond',
-                'getWorker'
-            ],
-        );
-        $this->psr7Worker
-            ->method('getWorker')
-            ->willReturn($this->worker);
-        $this->psr7Worker
-            ->expects(self::exactly(2))
-            ->method('waitRequest')
-            ->willReturnOnConsecutiveCalls(
-                $request,
-                null,
-            );
-
-        $app = $this->statelessApplication();
-
-        $roadRunner = new RoadRunner($app);
-        $result = $roadRunner->run();
-
-        self::assertSame(
-            ExitCode::OK,
-            $result,
-            "RoadRunner 'run()' method should return 'ExitCode::OK' after successfully handling a request.",
-        );
     }
 
     public function testRunMethodHandlesExceptionDuringRequestProcessing(): void
@@ -141,7 +48,7 @@ final class RoadRunnerTest extends TestCase
             [
                 'waitRequest',
                 'respond',
-                'getWorker'
+                'getWorker',
             ],
         );
         $this->psr7Worker
@@ -170,6 +77,85 @@ final class RoadRunnerTest extends TestCase
             $result,
             "RoadRunner 'run()' method should return 'ExitCode::OK' even when an exception occurs during request " .
             'handling.',
+        );
+    }
+
+    public function testRunMethodHandlesSingleRequestSuccessfully(): void
+    {
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::exactly(2))
+            ->method('waitRequest')
+            ->willReturnOnConsecutiveCalls(
+                $request,
+                null,
+            );
+
+        $app = $this->statelessApplication();
+
+        $roadRunner = new RoadRunner($app);
+        $result = $roadRunner->run();
+
+        self::assertSame(
+            ExitCode::OK,
+            $result,
+            "RoadRunner 'run()' method should return 'ExitCode::OK' after successfully handling a request.",
+        );
+    }
+
+    /**
+     * @throws InvalidConfigException if the configuration is invalid or incomplete.
+     * @throws NotInstantiableException if a class or service can't be instantiated.
+     */
+    public function testRunMethodReturnsExitCodeOkWhenWorkerReturnsNull(): void
+    {
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('waitRequest')
+            ->willReturn(null);
+
+        $app = $this->statelessApplication();
+
+        $roadRunner = new RoadRunner($app);
+        $result = $roadRunner->run();
+
+        self::assertSame(
+            ExitCode::OK,
+            $result,
+            "RoadRunner 'run()' method should return 'ExitCode::OK' when worker returns 'null' indicating no more " .
+            'requests.',
         );
     }
 }

@@ -20,16 +20,14 @@ use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii2\extensions\psrbridge\http\StatelessApplication;
 
-
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
+    protected MockObject|PSR7WorkerInterface|null $psr7Worker = null;
+    protected MockObject|WorkerInterface|null $worker = null;
     /**
      * @phpstan-var array<mixed, mixed>
      */
     private array $originalServer = [];
-
-    protected MockObject|PSR7WorkerInterface|null $psr7Worker = null;
-    protected MockObject|WorkerInterface|null $worker = null;
 
 
     protected function setUp(): void
