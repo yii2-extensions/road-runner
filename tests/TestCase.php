@@ -20,35 +20,19 @@ use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii2\extensions\psrbridge\http\StatelessApplication;
 
+use function dirname;
+
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected MockObject|PSR7WorkerInterface|null $psr7Worker = null;
-    protected MockObject|WorkerInterface|null $worker = null;
     /**
-     * @phpstan-var array<mixed, mixed>
+     * RoadRunner PSR-7 worker instance for handling requests.
      */
-    private array $originalServer = [];
+    protected MockObject|PSR7WorkerInterface|null $psr7Worker = null;
 
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->originalServer = $_SERVER;
-
-        $_SERVER = [];
-    }
-
-    protected function tearDown(): void
-    {
-        $_COOKIE = [];
-        $_FILES = [];
-        $_GET = [];
-        $_POST = [];
-        $_SERVER = $this->originalServer;
-
-        parent::tearDown();
-    }
+    /**
+     * RoadRunner worker instance for handling requests.
+     */
+    protected MockObject|WorkerInterface|null $worker = null;
 
     /**
      * @phpstan-param array{
