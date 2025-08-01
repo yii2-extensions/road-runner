@@ -61,7 +61,6 @@ declare(strict_types=1);
 use yii2\extensions\psrbridge\http\StatelessApplication;
 use yii2\extensions\roadrunner\RoadRunner;
 
-// Set your normal YII_ definitions
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
@@ -75,9 +74,9 @@ $runner = new RoadRunner(new StatelessApplication($config));
 $runner->run();
 ```
 
-### RoadRunner Configuration
+### RoadRunner configuration
 
-Create `.rr.yaml` in your project root:
+Create `.rr.yaml` in your project root.
 
 ```yaml
 version: '3'
@@ -107,7 +106,7 @@ logs:
     level: debug
 ```
 
-### Start the Server
+### Start the server
 
 ```bash
 # install RoadRunner binary
