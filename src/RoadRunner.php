@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace yii2\extensions\roadrunner;
 
 use JsonException;
-use Psr\Http\Message\{ServerRequestFactoryInterface, StreamFactoryInterface, UploadedFileFactoryInterface};
-use Spiral\RoadRunner\Http\PSR7Worker;
-use Spiral\RoadRunner\Worker;
-use Symfony\Component\Runtime\RunnerInterface;
+use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Throwable;
 use yii\base\InvalidConfigException;
 use yii\console\ExitCode;
@@ -35,9 +32,9 @@ use yii2\extensions\psrbridge\http\StatelessApplication;
  * @copyright Copyright (C) 2025 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
-final class RoadRunner implements RunnerInterface
+final class RoadRunner
 {
-    private PSR7Worker $worker;
+    private PSR7WorkerInterface $worker;
 
     /**
      * Creates a new instance of the {@see RoadRunner} class.
@@ -49,14 +46,7 @@ final class RoadRunner implements RunnerInterface
      */
     public function __construct(private readonly StatelessApplication $app)
     {
-        $container = $app->container();
-
-        $this->worker = new PSR7Worker(
-            Worker::create(),
-            $container->get(ServerRequestFactoryInterface::class),
-            $container->get(StreamFactoryInterface::class),
-            $container->get(UploadedFileFactoryInterface::class),
-        );
+        $this->worker = $this->app->container()->get(PSR7WorkerInterface::class);
     }
 
     /**
