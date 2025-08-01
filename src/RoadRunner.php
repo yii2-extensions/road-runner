@@ -14,33 +14,38 @@ use yii2\extensions\psrbridge\http\StatelessApplication;
 use function sprintf;
 
 /**
- * RoadRunner runtime integration for Yii2 applications.
+ * RoadRunner runtime integration for Yii2 Stateless Application.
  *
- * Provides a PSR-7/PSR-15 compatible runtime bridge for Yii2 applications using RoadRunner.
+ * Provides a request loop for handling PSR-7 requests from a RoadRunner worker, delegating processing to a
+ * {@see StatelessApplication} instance and emitting PSR-7 responses.
  *
- * This class implements the {@see RunnerInterface} to enable execution of Yii2 applications in a RoadRunner worker
- * environment, handling PSR-7 requests and responses via the configured {@see StatelessApplication} instance.
+ * This class manages the lifecycle of the RoadRunner worker, including request handling, response emission, and
+ * automatic shutdown when the application state is clean.
+ *
+ * All exceptions are caught and reported to the worker for error handling.
  *
  * Key features.
- * - Automatic worker shutdown on application clean state.
- * - Exception-safe request loop with error reporting to RoadRunner.
- * - PSR-7 request/response handling using Spiral RoadRunner PSR7Worker.
- * - Stateless application execution for high-performance PHP runtimes.
+ * - Ensures clean shutdown and error reporting to the RoadRunner worker.
+ * - Executes the RoadRunner request loop for stateless Yii2 applications.
+ * - Handles incoming PSR-7 requests and emits PSR-7 responses.
+ * - Integrates with the application container for worker instantiation.
  *
- * @see PSR7Worker for Spiral RoadRunner PSR-7 worker implementation.
- * @see RunnerInterface for Symfony Runtime integration.
+ * @see StatelessApplication for the Stateless Application implementation.
  *
  * @copyright Copyright (C) 2025 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class RoadRunner
 {
+    /**
+     * RoadRunner PSR-7 worker instance for handling requests.
+     */
     private PSR7WorkerInterface $worker;
 
     /**
      * Creates a new instance of the {@see RoadRunner} class.
      *
-     * @param StatelessApplication $app Stateless application instance.
+     * @param StatelessApplication $app Stateless Application instance.
      *
      * @throws InvalidConfigException if the configuration is invalid or incomplete.
      * @throws NotInstantiableException if a class or service can't be instantiated.
@@ -53,9 +58,11 @@ final class RoadRunner
     /**
      * Executes the RoadRunner request loop for the configured {@see StatelessApplication} instance.
      *
-     * Handles incoming PSR-7 requests from the RoadRunner worker, delegates processing to the stateless application,
+     * Handles incoming PSR-7 requests from the RoadRunner worker, delegates processing to the Stateless Application,
      * and emits PSR-7 responses. Automatically shuts down the worker if the application state is clean after handling
-     * a request. Exceptions are caught and reported to the RoadRunner worker for error handling.
+     * a request.
+     *
+     * Exceptions are caught and reported to the RoadRunner worker for error handling.
      *
      * @return int Exit code indicating successful execution ({@see ExitCode::OK}).
      *

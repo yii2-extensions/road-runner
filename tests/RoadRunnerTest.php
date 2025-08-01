@@ -32,6 +32,108 @@ final class RoadRunnerTest extends TestCase
         parent::tearDown();
     }
 
+    public function testRunMethodCallsWorkerStopWhenApplicationIsClean(): void
+    {
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::exactly(2))
+            ->method('waitRequest')
+            ->willReturnOnConsecutiveCalls($request, null);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->with(self::isInstanceOf(ResponseInterface::class));
+        $this->worker
+            ->expects(self::once())
+            ->method('stop');
+
+        $app = $this->statelessApplication();
+
+        // set a very low memory limit to force 'clean()' to return 'true', current memory usage will always be
+        // '>= 90%' of '1' byte
+        $app->setMemoryLimit(1);
+
+        $roadRunner = new RoadRunner($app);
+
+        self::assertSame(
+            ExitCode::OK,
+            $roadRunner->run(),
+            "RoadRunner 'run()' method should return 'ExitCode::OK' after calling worker stop when application is " .
+            'clean.',
+        );
+    }
+
+    public function testRunMethodDoesNotCallWorkerStopWhenApplicationIsNotClean(): void
+    {
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::exactly(2))
+            ->method('waitRequest')
+            ->willReturnOnConsecutiveCalls($request, null);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->with(self::isInstanceOf(ResponseInterface::class));
+        $this->worker
+            ->expects(self::never())
+            ->method('stop');
+
+        $app = $this->statelessApplication();
+
+        // set a very high memory limit to force 'clean()' to return 'false', current memory usage will never be
+        // '>= 90%' of 'PHP_INT_MAX'
+        $app->setMemoryLimit(PHP_INT_MAX);
+
+        $roadRunner = new RoadRunner($app);
+
+        self::assertSame(
+            ExitCode::OK,
+            $roadRunner->run(),
+            "RoadRunner 'run()' method should return 'ExitCode::OK' without calling worker stop when application is " .
+            'not clean.',
+        );
+    }
+
     public function testRunMethodHandlesExceptionDuringRequestProcessing(): void
     {
         $request = new ServerRequest(
@@ -119,11 +221,10 @@ final class RoadRunnerTest extends TestCase
         $app = $this->statelessApplication();
 
         $roadRunner = new RoadRunner($app);
-        $result = $roadRunner->run();
 
         self::assertSame(
             ExitCode::OK,
-            $result,
+            $roadRunner->run(),
             "RoadRunner 'run()' method should return 'ExitCode::OK' after successfully handling a request.",
         );
     }
@@ -154,11 +255,10 @@ final class RoadRunnerTest extends TestCase
         $app = $this->statelessApplication();
 
         $roadRunner = new RoadRunner($app);
-        $result = $roadRunner->run();
 
         self::assertSame(
             ExitCode::OK,
-            $result,
+            $roadRunner->run(),
             "RoadRunner 'run()' method should return 'ExitCode::OK' when worker returns 'null' indicating no more " .
             'requests.',
         );
