@@ -14,23 +14,9 @@ use yii\console\ExitCode;
 use yii\di\NotInstantiableException;
 use yii2\extensions\roadrunner\RoadRunner;
 
-use function ob_end_clean;
-use function ob_get_level;
-
 #[Group('roadrunner')]
 final class RoadRunnerTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        $level = ob_get_level();
-
-        while (--$level > 0) {
-            ob_end_clean();
-        }
-
-        parent::tearDown();
-    }
-
     public function testRunMethodCallsWorkerStopWhenApplicationIsClean(): void
     {
         $request = new ServerRequest(
