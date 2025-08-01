@@ -4,7 +4,7 @@
 
 - [`PHP`](https://www.php.net/downloads) 8.1 or higher.
 - [`Composer`](https://getcomposer.org/download/) for dependency management.
-- [`RoadRunner`](https://github.com/roadrunner-server/roadrunner) 2024.3.0+.
+- [`RoadRunner`](https://github.com/roadrunner-server/roadrunner) 2024.3.0 or higher.
 - [`Yii2`](https://github.com/yiisoft/yii2) 2.0.53+ or 22.x.
 
 ## Installation
@@ -14,7 +14,7 @@
 Install the extension.
 
 ```bash
-composer require yii2-extensions/road-runner
+composer require yii2-extensions/road-runner:^0.1
 ```
 
 ### Method 2: Manual installation
@@ -38,10 +38,10 @@ composer update
 ### Install RoadRunner binary
 
 ```bash
-# Download the RoadRunner binary
-./vendor/bin/rr get
+# download the roadRunner binary
+vendor/bin/rr get
 
-# Or download manually from GitHub releases
+# or download manually from gitHub releases
 curl -sSL https://github.com/roadrunner-server/roadrunner/releases/latest/download/roadrunner-linux-amd64.tar.gz | tar -xz
 ```
 
@@ -49,7 +49,7 @@ curl -sSL https://github.com/roadrunner-server/roadrunner/releases/latest/downlo
 
 Organize your project for RoadRunner:
 
-```
+```text
 your-project/
 ├── public/
 │   └── index.php          # RoadRunner entry point

@@ -54,7 +54,7 @@ if ($app->clean()) {
 
 Organize your project for RoadRunner:
 
-```
+```text
 your-project/
 ├── config/
 │   └── Common/                 # Common configuration  

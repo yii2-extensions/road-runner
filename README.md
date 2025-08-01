@@ -110,7 +110,7 @@ logs:
 
 ```bash
 # install RoadRunner binary
-./vendor/bin/rr get
+vendor/bin/rr get
 
 # start the server
 ./rr serve
