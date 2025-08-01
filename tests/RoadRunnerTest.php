@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace yii2\extensions\roadrunner\tests;
 
-use Exception;
 use HttpSoft\Message\{ServerRequest, Uri};
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Http\Message\ResponseInterface;
 use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunner\WorkerInterface;
-use yii\base\InvalidConfigException;
+use yii\base\{Exception, InvalidConfigException};
 use yii\console\ExitCode;
 use yii\di\NotInstantiableException;
 use yii2\extensions\roadrunner\RoadRunner;
@@ -131,6 +130,67 @@ final class RoadRunnerTest extends TestCase
             $roadRunner->run(),
             "RoadRunner 'run()' method should return 'ExitCode::OK' without calling worker stop when application is " .
             'not clean.',
+        );
+    }
+
+    public function testRunMethodFormatsErrorMessageCorrectly(): void
+    {
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+
+        // create a custom exception with known values for testing
+        $testException = new Exception('Test error message.');
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::exactly(2))
+            ->method('waitRequest')
+            ->willReturnOnConsecutiveCalls($request, null);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->willThrowException($testException);
+
+        // capture the exact error message passed to 'worker->error()'
+        $expectedErrorPattern = sprintf(
+            "['%s'] '%s' in '%s:%d'\nStack trace:\n'%s'",
+            Exception::class,
+            'Test error message.',
+            $testException->getFile(),
+            $testException->getLine(),
+            $testException->getTraceAsString(),
+        );
+
+        $this->worker
+            ->expects(self::once())
+            ->method('error')
+            ->with(self::identicalTo($expectedErrorPattern));
+
+        $app = $this->statelessApplication();
+
+        $roadRunner = new RoadRunner($app);
+
+        self::assertSame(
+            ExitCode::OK,
+            $roadRunner->run(),
+            "RoadRunner 'run()' method should return 'ExitCode::OK' and format error message correctly.",
         );
     }
 
