@@ -6,10 +6,7 @@ namespace yii2\extensions\roadrunner;
 
 use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Throwable;
-use yii\base\InvalidConfigException;
-use yii\console\ExitCode;
-use yii\di\NotInstantiableException;
-use yii2\extensions\psrbridge\http\StatelessApplication;
+use yii2\extensions\psrbridge\http\{ServerExitCode, StatelessApplication};
 
 use function sprintf;
 
@@ -47,8 +44,7 @@ final class RoadRunner
      *
      * @param StatelessApplication $app Stateless Application instance.
      *
-     * @throws InvalidConfigException if the configuration is invalid or incomplete.
-     * @throws NotInstantiableException if a class or service can't be instantiated.
+     * @throws Throwable if the worker cannot be instantiated from the container.
      */
     public function __construct(private readonly StatelessApplication $app)
     {
@@ -64,7 +60,7 @@ final class RoadRunner
      *
      * Exceptions are caught and reported to the RoadRunner worker for error handling.
      *
-     * @return int Exit code indicating successful execution ({@see ExitCode::OK}).
+     * @return int Exit code indicating successful execution ({@see ServerExitCode::OK}).
      *
      * Usage example:
      * ```php
@@ -95,6 +91,6 @@ final class RoadRunner
             }
         }
 
-        return ExitCode::OK;
+        return ServerExitCode::OK->value;
     }
 }
