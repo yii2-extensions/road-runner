@@ -60,7 +60,7 @@ final class RoadRunner
      *
      * Exceptions are caught and reported to the RoadRunner worker for error handling.
      *
-     * @return int Exit code indicating successful execution ({@see ExitCode::OK}).
+     * @return int Exit code indicating successful execution ({@see ServerExitCode::OK}).
      *
      * Usage example:
      * ```php
