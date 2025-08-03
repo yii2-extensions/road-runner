@@ -19,8 +19,7 @@
         "spiral/roadrunner-cli": "^2.5.0",
         "spiral/roadrunner-http": "^v3.0.0",
         "spiral/roadrunner-worker": "^3.0.0",
-        "yii2-extensions/psr-bridge": "^0.1@dev",
-        "yiisoft/yii2": "^2.0.53|^22"
+        "yii2-extensions/psr-bridge": "^0.1@dev"
     },
     "require-dev": {
         "infection/infection": "^0.27|^0.30",
