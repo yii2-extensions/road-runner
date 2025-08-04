@@ -57,9 +57,9 @@ Organize your project for RoadRunner:
 ```text
 your-project/
 ├── config/
-│   └── Common/                 # Common configuration  
+│   └── common/                 # Common configuration  
 │       ├── components.php      # Components
-│   └── Web/                    # Web configuration
+│   └── web/                    # Web configuration
 │       ├── app.php             # Application
 │       ├── components.php      # Components
 │       ├── container.php       # Container
@@ -120,13 +120,13 @@ use app\usecase\contact\ContactController;
 use app\usecase\security\SecurityController;
 use app\usecase\site\SiteController;
 
-/** @phpstan-var string[] $components */
+/** @phpstan-var array<string,mixed> $components */
 $components = require __DIR__ . '/components.php';
-/** @phpstan-var string[] $container */
+/** @phpstan-var array<string,mixed> $container */
 $container = require __DIR__ . '/container.php';
-/** @phpstan-var string[] $modules */
+/** @phpstan-var array<string,mixed> $modules */
 $modules = require __DIR__ . '/modules.php';
-/** @phpstan-var string[] $params */
+/** @phpstan-var array<string,mixed> $params */
 $params = require dirname(__DIR__) . '/params-web.php';
 
 $rootDir = dirname(__DIR__, 2);
@@ -192,10 +192,11 @@ declare(strict_types=1);
 
 use app\usecase\security\Identity;
 use yii2\extensions\localeurls\UrlLanguageManager;
+use yii\helpers\ArrayHelper;
 use yii\i18n\PhpMessageSource;
 use yii\web\User;
 
-/** @phpstan-var string[] $commonComponents */
+/** @phpstan-var array<string,mixed> $commonComponents */
 $commonComponents = require dirname(__DIR__) . '/common/components.php';
 
 $config = [
@@ -213,11 +214,6 @@ $config = [
                 'sourceLanguage' => 'en',
             ],
         ],
-    ],
-    'request' => [
-        'enableCookieValidation' => false,
-        'enableCsrfValidation' => false,
-        'enableCsrfCookie' => false,
     ],
     'urlManager' => [
         'class' => UrlLanguageManager::class,
@@ -245,9 +241,7 @@ $config = [
     ],
 ];
 
-$config += $commonComponents;
-
-return $config;
+return ArrayHelper::merge($commonComponents, $config);
 ```
 
 container.php
@@ -256,7 +250,12 @@ container.php
 
 declare(strict_types=1);
 
-use HttpSoft\Message\{ResponseFactory, ServerRequestFactory, StreamFactory, UploadedFileFactory};
+use HttpSoft\Message\{
+    ResponseFactory,
+    ServerRequestFactory,
+    StreamFactory,
+    UploadedFileFactory,
+};
 use Psr\Http\Message\{
     ResponseFactoryInterface,
     ServerRequestFactoryInterface,
