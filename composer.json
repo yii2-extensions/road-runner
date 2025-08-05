@@ -15,7 +15,7 @@
         "ext-sockets": "*",
         "psr/http-factory": "^1.1",
         "psr/http-message": "^2.0",
-        "spiral/roadrunner": "^2024.3.0",
+        "spiral/roadrunner": "^2025.1.2",
         "spiral/roadrunner-cli": "^2.5.0",
         "spiral/roadrunner-http": "^v3.0.0",
         "spiral/roadrunner-worker": "^3.0.0",
