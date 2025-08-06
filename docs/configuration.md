@@ -75,7 +75,7 @@ console.php
 declare(strict_types=1);
 
 use yii\caching\FileCache;
-use yii\Log\FileTarget;
+use yii\log\FileTarget;
 
 /** @var array<string,mixed> $params */
 $params = require __DIR__ . '/params.php';
@@ -325,7 +325,7 @@ $config = [
             ResponseFactoryInterface::class => ResponseFactory::class,
             ServerRequestFactoryInterface::class => ServerRequestFactory::class,
             StreamFactoryInterface::class => StreamFactory::class,
-            UploadedFileFactoryInterface::class => UploadedFileFactory::class,            
+            UploadedFileFactoryInterface::class => UploadedFileFactory::class,
         ],
     ],
     'params' => $params,
