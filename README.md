@@ -51,7 +51,7 @@ composer require yii2-extensions/road-runner
 
 ### Basic Usage
 
-Create your RoadRunner entry point (`public/index.php`):
+Create your RoadRunner entry point (`web/index.php`):
 
 ```php
 <?php
