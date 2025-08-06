@@ -224,7 +224,8 @@ return [
             'identityClass' => 'app\models\User',
         ],
         'request' => [
-            'cookieValidationKey' => 'test',
+            // note: this key is for testing only. Replace with a secure, random string in production!
+            'cookieValidationKey' => 'test_cookie_validation_key_1234567890',
             'enableCsrfValidation' => false,
             // but if you absolutely need it set cookie domain to localhost
             /*
@@ -277,8 +278,8 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'your-secret-key',
+            // note: this key is for testing only. Replace with a secure, random string in production!
+            'cookieValidationKey' => 'test_cookie_validation_key_1234567890',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
