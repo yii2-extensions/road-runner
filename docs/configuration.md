@@ -57,183 +57,194 @@ Organize your project for RoadRunner:
 ```text
 your-project/
 ├── config/
-│   └── common/                 # Common configuration  
-│       ├── components.php      # Components
-│   └── web/                    # Web configuration
-│       ├── app.php             # Application
-│       ├── components.php      # Components
-│       ├── container.php       # Container
-│       └── modules.php         # Modules
+│   ├── console.php             # Console application configuration
+│   ├── db.php                  # Database configuration
+│   ├── params.php              # Application parameters
+│   ├── test_db.php             # Test database configuration
+│   └── web.php                 # Web application configuration
 ├── .rr.yaml                    # RoadRunner configuration
 └── rr                          # RoadRunner binary
 ```
 
 ### Configuration files
 
-#### Common
-
-components.php
+console.php
 ```php
 <?php
 
 declare(strict_types=1);
 
-use yii\caching\ArrayCache;
-use yii\log\FileTarget;
-use yii\symfonymailer\Mailer;
+use yii\caching\FileCache;
+use yii\Log\FileTarget;
 
-return [
-    'cache' => [
-        'class' => ArrayCache::class,
-    ],
-    'log' => [
-        'traceLevel' => YII_DEBUG ? 3 : 0,
-        'targets' => [
-            [
-                'class' => FileTarget::class,
-                'levels' => [
-                    'error',
-                    'info',
-                    'warning',
-                ],
-                'logFile' => '@runtime/logs/app.log',
-            ],
-        ],
-    ],
-    'mailer' => [
-        'class' => Mailer::class,
-        'useFileTransport' => true,
-    ],
-];
-```
-
-#### Web
-
-app.php
-```php
-<?php
-
-declare(strict_types=1);
-
-use app\framework\event\ContactEventHandler;
-use app\usecase\contact\ContactController;
-use app\usecase\security\SecurityController;
-use app\usecase\site\SiteController;
-
-/** @phpstan-var array<string,mixed> $components */
-$components = require __DIR__ . '/components.php';
-/** @phpstan-var array<string,mixed> $container */
-$container = require __DIR__ . '/container.php';
-/** @phpstan-var array<string,mixed> $modules */
-$modules = require __DIR__ . '/modules.php';
-/** @phpstan-var array<string,mixed> $params */
-$params = require dirname(__DIR__) . '/params-web.php';
-
-$rootDir = dirname(__DIR__, 2);
+/** @var array<string,mixed> $params */
+$params = require __DIR__ . '/params.php';
+/** @var array<string,mixed> $db */
+$db = require __DIR__ . '/db.php';
 
 $config = [
-    'id' => 'web.basic',
+    'id' => 'basic-console',
+    'basePath' => dirname(__DIR__),
+    'bootstrap' => ['log'],
+    'controllerNamespace' => 'app\commands',
     'aliases' => [
-        '@root' => $rootDir,
-        '@npm' => '@root/node_modules',
-        '@bower' => '@npm',
-        '@public' => '@root/public',
-        '@resource' => '@root/src/framework/resource',
-        '@runtime' => '@root/runtime',
-        '@web' => '/',
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+        '@tests' => '@app/tests',
     ],
-    'basePath' => $rootDir,
-    'bootstrap' => [
-        ContactEventHandler::class,
-        'log',
+    'components' => [
+        'cache' => [
+            'class' => FileCache::class,
+        ],
+        'log' => [
+            'targets' => [
+                [
+                    'class' => FileTarget::class,
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
+        ],
+        'db' => $db,
     ],
-    'components' => $components,
-    'container' => $container,
-    'controllerMap' => [
-        'contact' => [
-            'class' => ContactController::class,
-        ],
-        'security' => [
-            'class' => SecurityController::class,
-        ],
-        'site' => [
-            'class' => SiteController::class,
-        ],
-    ],
-    'language' => 'en-US',
-    'modules' => $modules,
-    'name' => 'Web application basic',
     'params' => $params,
+    /*
+    'controllerMap' => [
+        'fixture' => [ // Fixture generation command line.
+            'class' => 'yii\faker\FixtureController',
+        ],
+    ],
+    */
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => yii\debug\Module::class,
-        'allowedIPs' => ['127.0.0.1', '::1'],
-    ];
-
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
-        'class' => yii\gii\Module::class,
-        'allowedIPs' => ['127.0.0.1', '::1'],
+        'class' => 'yii\gii\Module',
+    ];
+    // configuration adjustments for 'dev' environment
+    // requires version `2.1.21` of yii2-debug module
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 
 return $config;
 ```
 
-components.php
+db.php
 ```php
 <?php
 
 declare(strict_types=1);
 
-use app\usecase\security\Identity;
-use yii\helpers\ArrayHelper;
-use yii\i18n\PhpMessageSource;
+return [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
+    'username' => 'root',
+    'password' => '',
+    'charset' => 'utf8',
 
-/** @phpstan-var array<string,mixed> $commonComponents */
-$commonComponents = require dirname(__DIR__) . '/common/components.php';
-
-$config = [
-    'assetManager' => [
-        'basePath' => '@public/assets',
-    ],
-    'errorHandler' => [
-        'errorAction' => 'site/404',
-    ],
-    'i18n' => [
-        'translations' => [
-            'app.basic' => [
-                'class' => PhpMessageSource::class,
-                'basePath' => '@resource/message',
-                'sourceLanguage' => 'en',
-            ],
-        ],
-    ],
-    'request' => [
-        'cookieValidationKey' => 'test-road-runner-php',
-    ],    
-    'urlManager' => [
-        'enablePrettyUrl' => true,
-        'showScriptName' => false,
-    ],
-    'user' => [
-        'identityClass' => Identity::class,
-    ],
+    // Schema cache options (for production environment)
+    //'enableSchemaCache' => true,
+    //'schemaCacheDuration' => 60,
+    //'schemaCache' => 'cache',
 ];
-
-return ArrayHelper::merge($commonComponents, $config);
 ```
 
-container.php
+params.php
 ```php
 <?php
 
 declare(strict_types=1);
 
+return [
+    'adminEmail' => 'admin@example.com',
+    'senderEmail' => 'noreply@example.com',
+    'senderName' => 'Example.com mailer',
+];
+```
+
+test_db.php
+```php
+<?php
+
+declare(strict_types=1);
+
+/** @var array<string,mixed> $db */
+$db = require __DIR__ . '/db.php';
+
+// test database! Important not to run tests on production or development databases
+$db['dsn'] = 'mysql:host=localhost;dbname=yii2basic_test';
+
+return $db;
+```
+
+test.php
+```php
+<?php
+
+declare(strict_types=1);
+
+/** @var array<string,mixed> $params */
+$params = require __DIR__ . '/params.php';
+/** @var array<string,mixed> $db */
+$db = require __DIR__ . '/test_db.php';
+
+/**
+ * Application configuration shared by all test types
+ */
+return [
+    'id' => 'basic-tests',
+    'basePath' => dirname(__DIR__),
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    'language' => 'en-US',
+    'components' => [
+        'db' => $db,
+        'mailer' => [
+            'class' => \yii\symfonymailer\Mailer::class,
+            'viewPath' => '@app/mail',
+            // send all mails to a file by default.
+            'useFileTransport' => true,
+            'messageClass' => 'yii\symfonymailer\Message'
+        ],
+        'assetManager' => [
+            'basePath' => __DIR__ . '/../web/assets',
+        ],
+        'urlManager' => [
+            'showScriptName' => true,
+        ],
+        'user' => [
+            'identityClass' => 'app\models\User',
+        ],
+        'request' => [
+            'cookieValidationKey' => 'test',
+            'enableCsrfValidation' => false,
+            // but if you absolutely need it set cookie domain to localhost
+            /*
+            'csrfCookie' => [
+                'domain' => 'localhost',
+            ],
+            */
+        ],
+    ],
+    'params' => $params,
+];
+```
+
+web.php
+```php
+<?php
+
+declare(strict_types=1);
+
+use app\models\User;
 use HttpSoft\Message\{
     ResponseFactory,
     ServerRequestFactory,
@@ -249,34 +260,97 @@ use Psr\Http\Message\{
 use Spiral\RoadRunner\Http\{PSR7Worker, PSR7WorkerInterface};
 use Spiral\RoadRunner\Worker;
 use yii\di\Instance;
+use yii\symfonymailer\Mailer;
 
-return [
-    'definitions' => [
-        PSR7WorkerInterface::class => [
-            'class' => PSR7Worker::class,
-            '__construct()' => [
-                Worker::create(),
-                Instance::of(ServerRequestFactoryInterface::class),
-                Instance::of(StreamFactoryInterface::class),
-                Instance::of(UploadedFileFactoryInterface::class),
+/** @var array<string,mixed> $params */
+$params = require __DIR__ . '/params.php';
+/** @var array<string,mixed> $db */
+$db = require __DIR__ . '/db.php';
+
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'bootstrap' => ['log'],
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    'components' => [
+        'request' => [
+            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'cookieValidationKey' => 'your-secret-key',
+        ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+        'user' => [
+            'identityClass' => User::class,
+            'enableAutoLogin' => false, // not works in RoadRunner
+        ],
+        'errorHandler' => [
+            'errorAction' => 'site/error',
+        ],
+        'mailer' => [
+            'class' => Mailer::class,
+            'viewPath' => '@app/mail',
+            // send all mails to a file by default.
+            'useFileTransport' => true,
+        ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
             ],
         ],
-        ResponseFactoryInterface::class => ResponseFactory::class,
-        ServerRequestFactoryInterface::class => ServerRequestFactory::class,
-        StreamFactoryInterface::class => StreamFactory::class,
-        UploadedFileFactoryInterface::class => UploadedFileFactory::class
+        'db' => $db,
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
     ],
+    'container' => [
+        'definitions' => [
+            PSR7WorkerInterface::class => [
+                'class' => PSR7Worker::class,
+                '__construct()' => [
+                    Worker::create(),
+                    Instance::of(ServerRequestFactoryInterface::class),
+                    Instance::of(StreamFactoryInterface::class),
+                    Instance::of(UploadedFileFactoryInterface::class),
+                ],
+            ],
+            ResponseFactoryInterface::class => ResponseFactory::class,
+            ServerRequestFactoryInterface::class => ServerRequestFactory::class,
+            StreamFactoryInterface::class => StreamFactory::class,
+            UploadedFileFactoryInterface::class => UploadedFileFactory::class,            
+        ],
+    ],
+    'params' => $params,
 ];
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        //'allowedIPs' => ['127.0.0.1', '::1'],
+    ];
+
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        //'allowedIPs' => ['127.0.0.1', '::1'],
+    ];
+}
+
+return $config;
 ```
 
-modules.php
-```php
-<?php
-
-declare(strict_types=1);
-
-return []; // Add your modules here
-```
 
 ## Next steps
 
