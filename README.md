@@ -93,8 +93,8 @@ http:
             "Cache-Control": "no-cache"
 
     middleware:
-        - gzip
-        - static
+        - static   # serve files first
+        - gzip     # compress dynamic output
 
     static:
         dir: web
