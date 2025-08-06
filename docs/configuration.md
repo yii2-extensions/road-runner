@@ -189,6 +189,9 @@ test.php
 
 declare(strict_types=1);
 
+use app\models\User;
+use yii\symfonymailer\{Mailer, Message};
+
 /** @var array<string,mixed> $params */
 $params = require __DIR__ . '/params.php';
 /** @var array<string,mixed> $db */
@@ -208,11 +211,11 @@ return [
     'components' => [
         'db' => $db,
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
             // send all mails to a file by default.
             'useFileTransport' => true,
-            'messageClass' => 'yii\symfonymailer\Message'
+            'messageClass' => Message::class,
         ],
         'assetManager' => [
             'basePath' => __DIR__ . '/../web/assets',
@@ -221,7 +224,7 @@ return [
             'showScriptName' => true,
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => User::class,
         ],
         'request' => [
             // note: this key is for testing only. Replace with a secure, random string in production!
@@ -260,6 +263,7 @@ use Psr\Http\Message\{
 };
 use Spiral\RoadRunner\Http\{PSR7Worker, PSR7WorkerInterface};
 use Spiral\RoadRunner\Worker;
+use yii\caching\FileCache;
 use yii\di\Instance;
 use yii\symfonymailer\Mailer;
 
@@ -282,11 +286,11 @@ $config = [
             'cookieValidationKey' => 'test_cookie_validation_key_1234567890',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => FileCache::class,
         ],
         'user' => [
             'identityClass' => User::class,
-            'enableAutoLogin' => false, // not works in RoadRunner
+            'enableAutoLogin' => false, // does not work in RoadRunner
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
