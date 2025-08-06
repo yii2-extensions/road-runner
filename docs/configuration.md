@@ -55,7 +55,7 @@ if ($app->clean()) {
 Organize your project for RoadRunner:
 
 ```text
-your-project/
+app-basic/
 ├── config/
 │   ├── console.php             # Console application configuration
 │   ├── db.php                  # Database configuration
