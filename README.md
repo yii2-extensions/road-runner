@@ -51,7 +51,7 @@ composer require yii2-extensions/road-runner
 
 ### Basic Usage
 
-Create your RoadRunner entry point (`public/index.php`):
+Create your RoadRunner entry point (`web/index.php`):
 
 ```php
 <?php
@@ -80,30 +80,43 @@ Create `.rr.yaml` in your project root.
 
 ```yaml
 version: '3'
-server:
-    command: "php ./public/index.php"
-
 rpc:
-    listen: tcp://127.0.0.1:6001
-
+    listen: 'tcp://127.0.0.1:6001'
+server:
+    command: 'php web/index.php'
+    relay: pipes
 http:
-    address: :8080
-    pool:
-        num_workers: 4
-    timeout: 30s
-    read_timeout: 30s
-    write_timeout: 30s
-    middleware: ["static", "headers"]
-    static:
-        dir:   "./public"
-        forbid: [".php", ".htaccess"]
+    address: '0.0.0.0:8080'
+
     headers:
         response:
             "Cache-Control": "no-cache"
 
-logs:
-    mode: development
-    level: debug
+    middleware:
+        - static   # serve files first
+        - gzip     # compress dynamic output
+
+    static:
+        dir: web
+        forbid:
+            - .php
+            - .htaccess
+    pool:
+        num_workers: 1
+        supervisor:
+            max_worker_memory: 100
+jobs:
+    pool:
+        num_workers: 2
+        max_worker_memory: 100
+    consume: {  }
+kv:
+    local:
+        driver: memory
+        config:
+            interval: 60
+metrics:
+    address: '127.0.0.1:2112'
 ```
 
 ### Start the server
