@@ -4,7 +4,7 @@
 
 - [`PHP`](https://www.php.net/downloads) 8.1 or higher.
 - [`Composer`](https://getcomposer.org/download/) for dependency management.
-- [`RoadRunner`](https://github.com/roadrunner-server/roadrunner) 2024.3.0 or higher.
+- [`RoadRunner`](https://github.com/roadrunner-server/roadrunner) 2025.1.2 or higher.
 - [`Yii2`](https://github.com/yiisoft/yii2) 2.0.53+ or 22.x.
 
 ## Installation
@@ -50,8 +50,8 @@ curl -sSL https://github.com/roadrunner-server/roadrunner/releases/latest/downlo
 Organize your project for RoadRunner:
 
 ```text
-your-project/
-├── public/
+app-basic/
+├── web/
 │   └── index.php          # RoadRunner entry point
 ├── .rr.yaml               # RoadRunner configuration
 └── rr                     # RoadRunner binary
