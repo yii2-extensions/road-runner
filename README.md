@@ -61,8 +61,11 @@ declare(strict_types=1);
 use yii2\extensions\psrbridge\http\StatelessApplication;
 use yii2\extensions\roadrunner\RoadRunner;
 
-defined('YII_DEBUG') or define('YII_DEBUG', true);
-defined('YII_ENV') or define('YII_ENV', 'dev');
+// set to 'true' for development
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+
+// set environment to 'dev' for development
+defined('YII_ENV') or define('YII_ENV', 'prod');
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
