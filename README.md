@@ -70,7 +70,7 @@ defined('YII_ENV') or define('YII_ENV', 'prod');
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$config = require dirname(__DIR__) . '/config/web/app.php';
+$config = require dirname(__DIR__) . '/config/web.php';
 
 $runner = new RoadRunner(new StatelessApplication($config));
 
