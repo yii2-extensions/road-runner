@@ -25,6 +25,11 @@ use function dirname;
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
+     * A secret key used for cookie validation in tests.
+     */
+    protected const COOKIE_VALIDATION_KEY = 'wefJDF8sfdsfSDefwqdxj9oq';
+
+    /**
      * RoadRunner PSR-7 worker instance for handling requests.
      */
     protected MockObject|PSR7WorkerInterface|null $psr7Worker = null;
@@ -71,7 +76,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                             ],
                         ],
                         'request' => [
-                            'cookieValidationKey' => 'test-franken-php',
+                            'cookieValidationKey' => self::COOKIE_VALIDATION_KEY,
                             'parsers' => [
                                 'application/json' => JsonParser::class,
                             ],
