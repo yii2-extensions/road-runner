@@ -7,6 +7,18 @@
 - [`RoadRunner`](https://github.com/roadrunner-server/roadrunner) 2025.1.2 or higher.
 - [`Yii2`](https://github.com/yiisoft/yii2) 2.0.53+ or 22.x.
 
+### PSR-7/PSR-17 HTTP Message Factories
+
+- [`guzzlehttp/psr7`](https://github.com/guzzle/psr7)
+- [`httpsoft/http-message`](https://github.com/httpsoft/http-message)
+- [`nyholm/psr7`](https://github.com/Nyholm/psr7)
+
+For example, install HttpSoft (recommended for Yii2 applications).
+
+```bash
+composer require httpsoft/http-message
+```
+
 ## Installation
 
 ### Method 1: Using [Composer](https://getcomposer.org/download/) (recommended)
@@ -14,7 +26,7 @@
 Install the extension.
 
 ```bash
-composer require yii2-extensions/road-runner:^0.1
+composer require yii2-extensions/road-runner:^0.1.0@dev
 ```
 
 ### Method 2: Manual installation
@@ -24,7 +36,7 @@ Add to your `composer.json`.
 ```json
 {
     "require": {
-        "yii2-extensions/road-runner": "^0.1"
+        "yii2-extensions/road-runner": "^0.1.0@dev"
     }
 }
 ```

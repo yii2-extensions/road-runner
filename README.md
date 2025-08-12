@@ -46,13 +46,12 @@ automatic memory management and error reporting.
 ### Installation
 
 ```bash
-composer require yii2-extensions/road-runner
+composer require yii2-extensions/road-runner:^0.1.0@dev
 ```
 
 ### Basic Usage
 
-Create your RoadRunner entry point (`web/index.php`):
-
+Create your RoadRunner entry point (`web/index.php`)
 ```php
 <?php
 
@@ -79,8 +78,7 @@ $runner->run();
 
 ### RoadRunner configuration
 
-Create `.rr.yaml` in your project root.
-
+Create `.rr.yaml` in your project root
 ```yaml
 version: '3'
 rpc:
@@ -132,12 +130,11 @@ vendor/bin/rr get
 ./rr serve
 ```
 
-Your application will be available at `http://localhost:8080`.
+Your application will be available at `http://localhost:8080`
 
 ## Documentation
 
 For detailed configuration options and advanced usage.
-
 - 📚 [Installation Guide](docs/installation.md)
 - ⚙️ [Configuration Reference](docs/configuration.md) 
 - 🧪 [Testing Guide](docs/testing.md)

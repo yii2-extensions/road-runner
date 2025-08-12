@@ -228,7 +228,7 @@ return [
         ],
         'request' => [
             // note: this key is for testing only. Replace with a secure, random string in production!
-            'cookieValidationKey' => 'test_cookie_validation_key_1234567890',
+            'cookieValidationKey' => 'your-cookie-validation-key',
             'enableCsrfValidation' => false,
             // but if you absolutely need it set cookie domain to localhost
             /*
@@ -283,7 +283,7 @@ $config = [
     'components' => [
         'request' => [
             // note: this key is for testing only. Replace with a secure, random string in production!
-            'cookieValidationKey' => 'test_cookie_validation_key_1234567890',
+            'cookieValidationKey' => 'your-cookie-validation-key',
         ],
         'cache' => [
             'class' => FileCache::class,
@@ -355,7 +355,6 @@ if (YII_ENV_DEV) {
 
 return $config;
 ```
-
 
 ## Next steps
 
