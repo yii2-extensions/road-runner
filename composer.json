@@ -43,7 +43,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "1.0.x-dev"
+            "dev-main": "0.1.x-dev"
         }
     },
     "config": {
@@ -66,6 +66,10 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
+        },
+        {
+            "type": "vcs",
+            "url": "../psr-bridge"
         }
     ]
 }
