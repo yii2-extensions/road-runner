@@ -66,10 +66,6 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "vcs",
-            "url": "../psr-bridge"
         }
     ]
 }
