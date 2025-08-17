@@ -137,17 +137,23 @@ Your application will be available at `http://localhost:8080`
 For enhanced debugging capabilities and proper time display in RoadRunner, install the worker debug extension.
 
 ```bash
-composer require yii2-extensions/worker-debug:^0.1
+composer require --dev yii2-extensions/worker-debug:^0.1
 ```
 
-Add to your development configuration in (`config/web.php`).
+Add the following to your development configuration (`config/web.php`):
 
 ```php
+<?php
+
+declare(strict_types=1);
+
+use yii2\extensions\debug\WorkerDebugModule;
+
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
-        'class' => \yii2\extensions\debug\WorkerDebugModule::class,
+        'class' => WorkerDebugModule::class,
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
