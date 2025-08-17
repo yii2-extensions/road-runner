@@ -21,7 +21,7 @@
         "yii2-extensions/psr-bridge": "^0.1@dev"
     },
     "require-dev": {
-        "infection/infection": "^0.27|^0.30",
+        "infection/infection": "^0.27|^0.31",
         "httpsoft/http-message": "^1.1",
         "maglnet/composer-require-checker": "^4.1",
         "phpstan/extension-installer": "^1.4",
