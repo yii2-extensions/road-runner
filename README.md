@@ -120,18 +120,6 @@ metrics:
     address: '127.0.0.1:2112'
 ```
 
-### Start the server
-
-```bash
-# install RoadRunner binary
-vendor/bin/rr get
-
-# start the server
-./rr serve
-```
-
-Your application will be available at `http://localhost:8080`
-
 ### Development & Debugging
 
 For enhanced debugging capabilities and proper time display in RoadRunner, install the worker debug extension.
@@ -159,6 +147,18 @@ if (YII_ENV_DEV) {
     ];
 }
 ```
+
+### Start the server
+
+```bash
+# install RoadRunner binary
+vendor/bin/rr get
+
+# start the server
+./rr serve
+```
+
+Your application will be available at `http://localhost:8080`
 
 ## Documentation
 
