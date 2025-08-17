@@ -265,7 +265,10 @@ use Spiral\RoadRunner\Http\{PSR7Worker, PSR7WorkerInterface};
 use Spiral\RoadRunner\Worker;
 use yii\caching\FileCache;
 use yii\di\Instance;
+use yii\gii\Module;
 use yii\symfonymailer\Mailer;
+use yii2\extensions\debug\WorkerDebugModule;
+
 
 /** @var array<string,mixed> $params */
 $params = require __DIR__ . '/params.php';
@@ -340,14 +343,14 @@ if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
+        'class' => WorkerDebugModule::class,
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
+        'class' => Module::class,
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
