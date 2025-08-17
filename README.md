@@ -132,6 +132,28 @@ vendor/bin/rr get
 
 Your application will be available at `http://localhost:8080`
 
+### Development & Debugging
+
+For enhanced debugging capabilities and proper time display in RoadRunner, install the worker debug extension.
+
+```bash
+composer require yii2-extensions/worker-debug:^0.1
+```
+
+Add to your development configuration in (`config/web.php`).
+
+```php
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => \yii2\extensions\debug\WorkerDebugModule::class,
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        //'allowedIPs' => ['127.0.0.1', '::1'],
+    ];
+}
+```
+
 ## Documentation
 
 For detailed configuration options and advanced usage.
@@ -144,8 +166,8 @@ For detailed configuration options and advanced usage.
 [![Latest Stable Version](https://poser.pugx.org/yii2-extensions/road-runner/v)](https://github.com/yii2-extensions/road-runner/releases)
 [![Total Downloads](https://poser.pugx.org/yii2-extensions/road-runner/downloads)](https://packagist.org/packages/yii2-extensions/road-runner)
 [![codecov](https://codecov.io/gh/yii2-extensions/road-runner/graph/badge.svg?token=Upc4yA23YN)](https://codecov.io/gh/yii2-extensions/road-runner)
-[![phpstan-level](https://img.shields.io/badge/PHPStan%20level-max-blue)](https://github.com/yii2-extensions/localeurls/actions/workflows/static.yml)
-[![StyleCI](https://github.styleci.io/repos/698621511/shield?branch=main)](https://github.styleci.io/repos/698621511?branch=main)
+[![phpstan-level](https://img.shields.io/badge/PHPStan%20level-max-blue)](https://github.com/yii2-extensions/road-runner/actions/workflows/static.yml)
+[![StyleCI](https://github.styleci.io/repos/1029366421/shield?branch=main)](https://github.styleci.io/repos/1029366421?branch=main)
 
 ## Our social networks
 
