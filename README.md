@@ -130,6 +130,8 @@ vendor/bin/rr get
 ./rr serve
 ```
 
+Your application will be available at `http://localhost:8080` or the address you specified in `.rr.yaml`.
+
 ### Development & Debugging
 
 For enhanced debugging capabilities and proper time display in RoadRunner, install the worker debug extension.
@@ -184,8 +186,6 @@ final class FileController extends \yii\web\Controller
     }
 }
 ```
-
-Your application will be available at `http://localhost:8080`
 
 ## Documentation
 
