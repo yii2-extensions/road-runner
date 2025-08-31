@@ -120,6 +120,16 @@ metrics:
     address: '127.0.0.1:2112'
 ```
 
+### Start the server
+
+```bash
+# install RoadRunner binary
+vendor/bin/rr get
+
+# start the server
+./rr serve
+```
+
 ### Development & Debugging
 
 For enhanced debugging capabilities and proper time display in RoadRunner, install the worker debug extension.
@@ -148,14 +158,31 @@ if (YII_ENV_DEV) {
 }
 ```
 
-### Start the server
+### File Upload Handling
 
-```bash
-# install RoadRunner binary
-vendor/bin/rr get
+For enhanced file upload support in worker environments, use the PSR-7 bridge UploadedFile class instead of the standard 
+Yii2 implementation.
 
-# start the server
-./rr serve
+```php
+<?php
+
+declare(strict_types=1);
+
+use yii2\extensions\psrbridge\http\{Response, UploadedFile};
+
+final class FileController extends \yii\web\Controller
+{
+    public function actionUpload(): Response
+    {
+        $file = UploadedFile::getInstanceByName('avatar');
+        
+        if ($file !== null && $file->error === UPLOAD_ERR_OK) {
+            $file->saveAs('@webroot/uploads/' . $file->name);
+        }
+        
+        return $this->asJson(['status' => 'uploaded']);
+    }
+}
 ```
 
 Your application will be available at `http://localhost:8080`
