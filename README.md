@@ -86,6 +86,7 @@ server:
     relay: pipes
 http:
     address: '0.0.0.0:8080'
+    # development-only overrides, remove or set to production values for deploys
     env:
         YII_DEBUG: true
         YII_ENV: dev    
@@ -112,7 +113,7 @@ jobs:
         num_workers: 2
         max_worker_memory: 100
     consume: {  }
-    
+
 kv:
     local:
         driver: memory
