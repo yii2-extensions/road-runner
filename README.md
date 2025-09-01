@@ -7,6 +7,9 @@
 </p>
 
 <p align="center">
+    <a href="https://packagist.org/packages/yii2-extensions/road-runner" target="_blank">
+        <img src="https://img.shields.io/badge/Status-Dev-orange.svg?style=for-the-badge&logo=packagist&logoColor=white" alt="Development Status">
+    </a>
     <a href="https://www.php.net/releases/8.1/en.php" target="_blank">
         <img src="https://img.shields.io/badge/%3E%3D8.1-777BB4.svg?style=for-the-badge&logo=php&logoColor=white" alt="PHP version">
     </a>
@@ -40,11 +43,6 @@ automatic memory management and error reporting.
 
 ## Installation
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yii2-extensions/road-runner.svg?style=for-the-badge&logo=packagist&logoColor=white&label=Stable)](https://packagist.org/packages/yii2-extensions/road-runner)
-[![Total Downloads](https://img.shields.io/packagist/dt/yii2-extensions/road-runner.svg?style=for-the-badge&logo=packagist&logoColor=white&label=Downloads)](https://packagist.org/packages/yii2-extensions/road-runner)
-
-## Quick start
-
 ```bash
 composer require yii2-extensions/road-runner:^0.1.0@dev
 ```
@@ -57,16 +55,16 @@ Create your RoadRunner entry point (`web/index.php`)
 
 declare(strict_types=1);
 
+require __DIR__ . '/../vendor/autoload.php';
+
 use yii2\extensions\psrbridge\http\StatelessApplication;
 use yii2\extensions\roadrunner\RoadRunner;
 
 // production default (change to 'true' for development)
 defined('YII_DEBUG') or define('YII_DEBUG', false);
-
 // production default (change to 'dev' for development)
 defined('YII_ENV') or define('YII_ENV', 'prod');
 
-require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 $config = require dirname(__DIR__) . '/config/web.php';
@@ -88,6 +86,10 @@ server:
     relay: pipes
 http:
     address: '0.0.0.0:8080'
+    # development-only overrides, remove or set to production values for deploys
+    env:
+        YII_DEBUG: true
+        YII_ENV: dev    
 
     headers:
         response:
@@ -111,6 +113,7 @@ jobs:
         num_workers: 2
         max_worker_memory: 100
     consume: {  }
+
 kv:
     local:
         driver: memory
@@ -197,6 +200,7 @@ For detailed configuration options and advanced usage.
 
 ## Quality code
 
+[![Total Downloads](https://img.shields.io/packagist/dt/yii2-extensions/road-runner.svg?style=for-the-badge&logo=packagist&logoColor=white&label=Downloads)](https://packagist.org/packages/yii2-extensions/road-runner)
 [![Codecov](https://img.shields.io/codecov/c/github/yii2-extensions/road-runner.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/github/yii2-extensions/road-runner)
 [![PHPStan Level Max](https://img.shields.io/badge/PHPStan-Level%20Max-4F5D95.svg?style=for-the-badge&logo=php&logoColor=white)](https://github.com/yii2-extensions/road-runner/actions/workflows/static.yml)
 [![StyleCI](https://img.shields.io/badge/StyleCI-Passed-44CC11.svg?style=for-the-badge&logo=styleci&logoColor=white)](https://github.styleci.io/repos/1029366421?branch=main)
