@@ -18,10 +18,10 @@
     </a>
     <a href="https://github.com/yii2-extensions/road-runner/actions/workflows/build.yml" target="_blank">
         <img src="https://img.shields.io/github/actions/workflow/status/yii2-extensions/road-runner/build.yml?style=for-the-badge&label=PHPUnit" alt="PHPUnit">
-    </a>   
+    </a>
     <a href="https://dashboard.stryker-mutator.io/reports/github.com/yii2-extensions/road-runner/main" target="_blank">
         <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyii2-extensions%2Froad-runner%2Fmain" alt="Mutation testing badge">
-    </a>      
+    </a>
     <a href="https://github.com/yii2-extensions/road-runner/actions/workflows/static.yml" target="_blank">
         <img src="https://img.shields.io/github/actions/workflow/status/yii2-extensions/road-runner/static.yml?style=for-the-badge&label=PHPStan" alt="PHPStan">
     </a>
