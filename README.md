@@ -41,6 +41,13 @@ automatic memory management and error reporting.
 - ✅ **Stateless Design**: Memory-efficient stateless application lifecycle.
 - ✅ **Zero Configuration**: Works out of the box with minimal setup.
 
+## Demo
+
+[![Template](https://img.shields.io/badge/Template-App%20Basic-74AA9C?style=for-the-badge&logo=yii&logoColor=white)](https://github.com/yii2-extensions/app-basic/tree/road-runner)
+
+Explore the ready-to-run Yii2 + RoadRunner application template.
+
+
 ## Installation
 
 ```bash
