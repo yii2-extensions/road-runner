@@ -1,14 +1,15 @@
 ---
 on:
-  pull_request: &ignore-paths
-    paths-ignore:
+  pull_request:
+    paths-ignore: &ignore-paths
       - ".gitattributes"
       - ".gitignore"
       - "CHANGELOG.md"
       - "docs/**"
       - "README.md"
 
-  push: *ignore-paths
+  push:
+    paths-ignore: *ignore-paths
 
 name: build
 
