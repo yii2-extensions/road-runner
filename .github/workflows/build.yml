@@ -20,3 +20,5 @@ jobs:
     uses: yii2-framework/actions/.github/workflows/phpunit.yml@v1
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    with:
+      extensions: sockets
