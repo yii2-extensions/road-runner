@@ -40,7 +40,6 @@
 
 Explore the ready-to-run Yii2 + RoadRunner application template.
 
-
 ## Installation
 
 ```bash
@@ -50,6 +49,7 @@ composer require yii2-extensions/road-runner:^0.1.0@dev
 ### Basic Usage
 
 Create your RoadRunner entry point (`web/index.php`)
+
 ```php
 <?php
 
@@ -77,27 +77,28 @@ $runner->run();
 ### RoadRunner configuration
 
 Create `.rr.yaml` in your project root
+
 ```yaml
-version: '3'
+version: "3"
 rpc:
-    listen: 'tcp://127.0.0.1:6001'
+    listen: "tcp://127.0.0.1:6001"
 server:
-    command: 'php web/index.php'
+    command: "php web/index.php"
     relay: pipes
 http:
-    address: '0.0.0.0:8080'
+    address: "0.0.0.0:8080"
     # development-only overrides, remove or set to production values for deploys
     env:
         YII_DEBUG: true
-        YII_ENV: dev    
+        YII_ENV: dev
 
     headers:
         response:
             "Cache-Control": "no-cache"
 
     middleware:
-        - static   # serve files first
-        - gzip     # compress dynamic output
+        - static # serve files first
+        - gzip # compress dynamic output
 
     static:
         dir: web
@@ -112,7 +113,7 @@ jobs:
     pool:
         num_workers: 2
         max_worker_memory: 100
-    consume: {  }
+    consume: {}
 
 kv:
     local:
@@ -120,7 +121,7 @@ kv:
         config:
             interval: 60
 metrics:
-    address: '127.0.0.1:2112'
+    address: "127.0.0.1:2112"
 ```
 
 ### Start the server
@@ -134,8 +135,8 @@ vendor/bin/rr get
 ```
 
 > [!IMPORTANT]
-> Your applicaion will be available at `http://127.0.0.1:8080` (or `http://localhost:8080`) or at the address set in 
-`http.address` in `.rr.yaml`.
+> Your applicaion will be available at `http://127.0.0.1:8080` (or `http://localhost:8080`) or at the address set in
+> `http.address` in `.rr.yaml`.
 
 ### Development & Debugging
 
@@ -167,7 +168,7 @@ if (YII_ENV_DEV) {
 
 ### File Upload Handling
 
-For enhanced file upload support in worker environments, use the PSR-7 bridge UploadedFile class instead of the standard 
+For enhanced file upload support in worker environments, use the PSR-7 bridge UploadedFile class instead of the standard
 Yii2 implementation.
 
 ```php
@@ -182,11 +183,11 @@ final class FileController extends \yii\web\Controller
     public function actionUpload(): Response
     {
         $file = UploadedFile::getInstanceByName('avatar');
-        
+
         if ($file !== null && $file->error === UPLOAD_ERR_OK) {
             $file->saveAs('@webroot/uploads/' . $file->name);
         }
-        
+
         return $this->asJson(['status' => 'uploaded']);
     }
 }
@@ -195,8 +196,9 @@ final class FileController extends \yii\web\Controller
 ## Documentation
 
 For detailed configuration options and advanced usage.
+
 - 📚 [Installation Guide](docs/installation.md)
-- ⚙️ [Configuration Reference](docs/configuration.md) 
+- ⚙️ [Configuration Reference](docs/configuration.md)
 - 🧪 [Testing Guide](docs/testing.md)
 
 ## Package information

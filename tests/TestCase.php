@@ -27,7 +27,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * A secret key used for cookie validation in tests.
      */
-    protected const COOKIE_VALIDATION_KEY = 'wefJDF8sfdsfSDefwqdxj9oq';
+    protected const COOKIE_VALIDATION_KEY = 'test-roadrunner-php';
 
     /**
      * RoadRunner PSR-7 worker instance for handling requests.

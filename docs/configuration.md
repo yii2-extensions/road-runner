@@ -69,6 +69,7 @@ app-basic/
 ### Configuration files
 
 console.php
+
 ```php
 <?php
 
@@ -136,6 +137,7 @@ return $config;
 ```
 
 db.php
+
 ```php
 <?php
 
@@ -156,6 +158,7 @@ return [
 ```
 
 params.php
+
 ```php
 <?php
 
@@ -169,6 +172,7 @@ return [
 ```
 
 test_db.php
+
 ```php
 <?php
 
@@ -184,6 +188,7 @@ return $db;
 ```
 
 test.php
+
 ```php
 <?php
 
@@ -243,6 +248,7 @@ return [
 ```
 
 web.php
+
 ```php
 <?php
 
