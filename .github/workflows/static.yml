@@ -1,15 +1,14 @@
 ---
 on:
-  pull_request:
-    paths-ignore: &ignore-paths
+  pull_request: &ignore-paths
+    paths-ignore:
       - ".gitattributes"
       - ".gitignore"
       - "CHANGELOG.md"
       - "docs/**"
       - "README.md"
 
-  push:
-    paths-ignore: *ignore-paths
+  push: *ignore-paths
 
 name: static analysis
 
