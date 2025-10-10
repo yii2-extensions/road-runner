@@ -2,6 +2,8 @@
 
 ## 0.1.1 Under development
 
+- Bug #26: Update `tests/support/bootstrap.php` file path and add `TestCase` class for improved testing structure (@terabytesoftw)
+
 ## 0.1.0 October 8, 2025
 
 - Enh #2: Introduce `RoadRunner` implementation with tests (@terabytesoftw)

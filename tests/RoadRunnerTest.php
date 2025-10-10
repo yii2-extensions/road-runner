@@ -13,7 +13,21 @@ use yii\base\{Exception, InvalidConfigException};
 use yii\console\ExitCode;
 use yii\di\NotInstantiableException;
 use yii2\extensions\roadrunner\RoadRunner;
+use yii2\extensions\roadrunner\tests\support\TestCase;
 
+/**
+ * Test suite for {@see RoadRunner} core bridge functionality.
+ *
+ * Validates integration and behavior of the RoadRunner bridge within Yii2 applications.
+ *
+ * Test coverage.
+ * - Confirms error handling and event emission during request processing.
+ * - Ensures correct initialization and teardown of RoadRunner environment.
+ * - Verifies HTTP request/response handling and worker lifecycle management.
+ *
+ * @copyright Copyright (C) 2025 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
+ */
 #[Group('roadrunner')]
 final class RoadRunnerTest extends TestCase
 {
