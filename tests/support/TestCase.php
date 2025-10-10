@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace yii2\extensions\roadrunner\tests;
+namespace yii2\extensions\roadrunner\tests\support;
 
 use HttpSoft\Message\{ResponseFactory, ServerRequestFactory, StreamFactory, UploadedFileFactory};
 use PHPUnit\Framework\MockObject\MockObject;
@@ -22,6 +22,24 @@ use yii2\extensions\psrbridge\http\StatelessApplication;
 
 use function dirname;
 
+/**
+ * Base test case providing common helpers and utilities for RoadRunner extension tests.
+ *
+ * Provides utilities to create Yii2 stateless application instances configured for RoadRunner testing environments.
+ *
+ * The test case sets up a pre-configured application with PSR-7 factories, caching, logging, and routing capabilities
+ * suitable for testing RoadRunner integration with Yii2.
+ *
+ * Key features.
+ * - Configures URL routing with pretty URLs and custom routing patterns.
+ * - Creates `StatelessApplication` instances with a sane test configuration for RoadRunner.
+ * - Pre-configures PSR-7 factories (ResponseFactory, ServerRequestFactory, StreamFactory, UploadedFileFactory).
+ * - Provides file caching and logging components for test scenarios.
+ * - Sets up RoadRunner PSR-7 worker and worker instances for dependency injection in tests.
+ *
+ * @copyright Copyright (C) 2025 Terabytesoftw.
+ * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
+ */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -55,7 +73,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ArrayHelper::merge(
                 [
                     'id' => 'stateless-app',
-                    'basePath' => __DIR__,
+                    'basePath' => dirname(__DIR__, 2),
                     'bootstrap' => ['log'],
                     'components' => [
                         'cache' => [
@@ -71,7 +89,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                                         'info',
                                         'warning',
                                     ],
-                                    'logFile' => '@runtime/log/app.log',
                                 ],
                             ],
                         ],
@@ -103,8 +120,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                             UploadedFileFactoryInterface::class => UploadedFileFactory::class,
                         ],
                     ],
-                    'runtimePath' => dirname(__DIR__) . '/runtime',
-                    'vendorPath' => dirname(__DIR__) . '/vendor',
                 ],
                 $config,
             ),
