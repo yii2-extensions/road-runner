@@ -33,3 +33,4 @@
 - Bug #24: Bump `php-forge/actions` from `1` to `2` (@dependabot)
 - Bug #25: Update workflows and documentation for improved CI/CD processes and feature clarity (@terabytesoftw)
 - Bug #26: Update license badge style in `README.md` (@terabytesoftw)
+- Bug #27: Adjust viewBox dimensions for mobile and desktop SVGs for improved layout (@terabytesoftw)
