@@ -1,5 +1,7 @@
 # ChangeLog
 
+## 0.1.2 Under development
+
 ## 0.1.1 January 25, 2026
 
 - Bug #25: Update workflows and documentation for improved CI/CD processes and feature clarity (@terabytesoftw)
