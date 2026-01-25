@@ -2,9 +2,13 @@
 
 ## 0.1.1 Under development
 
+- Bug #25: Update workflows and documentation for improved CI/CD processes and feature clarity (@terabytesoftw)
 - Bug #26: Update `tests/support/bootstrap.php` file path and add `TestCase` class for improved testing structure (@terabytesoftw)
 - Bug #27: Update `.editorconfig` and `.gitignore` for improved consistency and clarity (@terabytesoftw)
-- Dep #28: Update `symplify/easy-coding-standard requirement` from `^12.5` to `^13.0` (@dependabot)
+- Bug #28: Update `symplify/easy-coding-standard` requirement from `^12.5` to `^13.0` (@dependabot)
+- Bug #29: Update license badge style in `README.md` (@terabytesoftw)
+- Bug #30: Adjust viewBox dimensions for mobile and desktop SVGs for improved layout (@terabytesoftw)
+- Enh #31: Add `php-forge/coding-standard` to development dependencies for code quality checks and add support `PHP 8.5` (@terabytesoftw)
 
 ## 0.1.0 October 8, 2025
 
@@ -31,9 +35,3 @@
 - Bug #22: Add mutation testing badge to `README.md` (@terabytesoftw)
 - Bug #23: Add demo section to `README.md` with a link to the live application template (@terabytesoftw)
 - Bug #24: Bump `php-forge/actions` from `1` to `2` (@dependabot)
-- Bug #25: Update workflows and documentation for improved CI/CD processes and feature clarity (@terabytesoftw)
-- Bug #26: Update `tests/support/bootstrap.php` file path and add `TestCase` class for improved testing structure (@terabytesoftw)
-- Bug #27: Update `.editorconfig` and `.gitignore` for improved consistency and clarity (@terabytesoftw)
-- Bug #28: Update `symplify/easy-coding-standard` requirement from `^12.5` to `^13.0` (@dependabot)
-- Bug #29: Update license badge style in `README.md` (@terabytesoftw)
-- Bug #30: Adjust viewBox dimensions for mobile and desktop SVGs for improved layout (@terabytesoftw)
