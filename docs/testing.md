@@ -72,7 +72,7 @@ Composer scripts support forwarding additional arguments using `--`.
 Example: run a specific PHPUnit test or filter by name.
 
 ```bash
-composer run tests -- --filter SvgTest
+composer run tests -- --filter RoadRunnerTest
 ```
 
 Example: run PHPStan with a different memory limit:
