@@ -6,6 +6,7 @@ namespace yii2\extensions\roadrunner;
 
 use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Throwable;
+use yii\web\IdentityInterface;
 use yii2\extensions\psrbridge\http\{ServerExitCode, StatelessApplication};
 
 use function sprintf;
@@ -37,7 +38,7 @@ final class RoadRunner
     /**
      * RoadRunner PSR-7 worker instance for handling requests.
      */
-    private PSR7WorkerInterface $worker;
+    private readonly PSR7WorkerInterface $worker;
 
     /**
      * Creates a new instance of the {@see RoadRunner} class.
@@ -45,6 +46,8 @@ final class RoadRunner
      * @param StatelessApplication $app Stateless Application instance.
      *
      * @throws Throwable if the worker cannot be instantiated from the container.
+     *
+     * @phpstan-param StatelessApplication<IdentityInterface> $app
      */
     public function __construct(private readonly StatelessApplication $app)
     {

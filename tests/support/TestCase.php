@@ -17,7 +17,7 @@ use Spiral\RoadRunner\WorkerInterface;
 use yii\caching\FileCache;
 use yii\helpers\ArrayHelper;
 use yii\log\FileTarget;
-use yii\web\JsonParser;
+use yii\web\{IdentityInterface, JsonParser};
 use yii2\extensions\psrbridge\http\StatelessApplication;
 
 use function dirname;
@@ -66,63 +66,65 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *   runtimePath?: string,
      *   vendorPath?: string
      * } $config
+     * @phpstan-return StatelessApplication<IdentityInterface>
      */
     protected function statelessApplication(array $config = []): StatelessApplication
     {
-        return new StatelessApplication(
-            ArrayHelper::merge(
-                [
-                    'id' => 'stateless-app',
-                    'basePath' => dirname(__DIR__, 2),
-                    'bootstrap' => ['log'],
-                    'components' => [
-                        'cache' => [
-                            'class' => FileCache::class,
-                        ],
-                        'log' => [
-                            'traceLevel' => YII_DEBUG ? 3 : 0,
-                            'targets' => [
-                                [
-                                    'class' => FileTarget::class,
-                                    'levels' => [
-                                        'error',
-                                        'info',
-                                        'warning',
-                                    ],
-                                ],
-                            ],
-                        ],
-                        'request' => [
-                            'cookieValidationKey' => self::COOKIE_VALIDATION_KEY,
-                            'parsers' => [
-                                'application/json' => JsonParser::class,
-                            ],
-                            'scriptFile' => __DIR__ . '/index.php',
-                            'scriptUrl' => '/index.php',
-                        ],
-                        'urlManager' => [
-                            'showScriptName' => false,
-                            'enablePrettyUrl' => true,
-                            'rules' => [
-                                [
-                                    'pattern' => '/<controller>/<action>/<test:\w+>',
-                                    'route' => '<controller>/<action>',
+        /** @phpstan-var array<string, mixed> $configApplication */
+        $configApplication = ArrayHelper::merge(
+            [
+                'id' => 'stateless-app',
+                'basePath' => dirname(__DIR__, 2),
+                'bootstrap' => ['log'],
+                'components' => [
+                    'cache' => [
+                        'class' => FileCache::class,
+                    ],
+                    'log' => [
+                        'traceLevel' => YII_DEBUG ? 3 : 0,
+                        'targets' => [
+                            [
+                                'class' => FileTarget::class,
+                                'levels' => [
+                                    'error',
+                                    'info',
+                                    'warning',
                                 ],
                             ],
                         ],
                     ],
-                    'container' => [
-                        'definitions' => [
-                            PSR7WorkerInterface::class => fn(): MockObject|PSR7WorkerInterface|null => $this->psr7Worker,
-                            ResponseFactoryInterface::class => ResponseFactory::class,
-                            ServerRequestFactoryInterface::class => ServerRequestFactory::class,
-                            StreamFactoryInterface::class => StreamFactory::class,
-                            UploadedFileFactoryInterface::class => UploadedFileFactory::class,
+                    'request' => [
+                        'cookieValidationKey' => self::COOKIE_VALIDATION_KEY,
+                        'parsers' => [
+                            'application/json' => JsonParser::class,
+                        ],
+                        'scriptFile' => __DIR__ . '/index.php',
+                        'scriptUrl' => '/index.php',
+                    ],
+                    'urlManager' => [
+                        'showScriptName' => false,
+                        'enablePrettyUrl' => true,
+                        'rules' => [
+                            [
+                                'pattern' => '/<controller>/<action>/<test:\w+>',
+                                'route' => '<controller>/<action>',
+                            ],
                         ],
                     ],
                 ],
-                $config,
-            ),
+                'container' => [
+                    'definitions' => [
+                        PSR7WorkerInterface::class => fn(): MockObject|PSR7WorkerInterface|null => $this->psr7Worker,
+                        ResponseFactoryInterface::class => ResponseFactory::class,
+                        ServerRequestFactoryInterface::class => ServerRequestFactory::class,
+                        StreamFactoryInterface::class => StreamFactory::class,
+                        UploadedFileFactoryInterface::class => UploadedFileFactory::class,
+                    ],
+                ],
+            ],
+            $config,
         );
+
+        return new StatelessApplication($configApplication);
     }
 }

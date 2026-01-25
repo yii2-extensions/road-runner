@@ -77,8 +77,8 @@ final class RoadRunnerTest extends TestCase
         self::assertSame(
             ExitCode::OK,
             $roadRunner->run(),
-            "RoadRunner 'run()' method should return 'ExitCode::OK' after calling worker stop when application is " .
-            'clean.',
+            "RoadRunner 'run()' method should return 'ExitCode::OK' after calling worker stop when application is "
+            . 'clean.',
         );
     }
 
@@ -128,8 +128,8 @@ final class RoadRunnerTest extends TestCase
         self::assertSame(
             ExitCode::OK,
             $roadRunner->run(),
-            "RoadRunner 'run()' method should return 'ExitCode::OK' without calling worker stop when application is " .
-            'not clean.',
+            "RoadRunner 'run()' method should return 'ExitCode::OK' without calling worker stop when application is "
+            . 'not clean.',
         );
     }
 
@@ -238,8 +238,8 @@ final class RoadRunnerTest extends TestCase
         self::assertSame(
             ExitCode::OK,
             $result,
-            "RoadRunner 'run()' method should return 'ExitCode::OK' even when an exception occurs during request " .
-            'handling.',
+            "RoadRunner 'run()' method should return 'ExitCode::OK' even when an exception occurs during request "
+            . 'handling.',
         );
     }
 
@@ -319,8 +319,8 @@ final class RoadRunnerTest extends TestCase
         self::assertSame(
             ExitCode::OK,
             $roadRunner->run(),
-            "RoadRunner 'run()' method should return 'ExitCode::OK' when worker returns 'null' indicating no more " .
-            'requests.',
+            "RoadRunner 'run()' method should return 'ExitCode::OK' when worker returns 'null' indicating no more "
+            . 'requests.',
         );
     }
 }
