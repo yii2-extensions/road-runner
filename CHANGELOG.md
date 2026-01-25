@@ -1,6 +1,6 @@
 # ChangeLog
 
-## 0.1.1 Under development
+## 0.1.1 January 25, 2026
 
 - Bug #25: Update workflows and documentation for improved CI/CD processes and feature clarity (@terabytesoftw)
 - Bug #26: Update `tests/support/bootstrap.php` file path and add `TestCase` class for improved testing structure (@terabytesoftw)
