@@ -4,6 +4,7 @@
 
 - Bug #33: Update examples in `testing.md` for running Composer script with arguments (@terabytesoftw)
 - Bug #34: Correct command syntax for running PHPStan in `testing.md` (@terabytesoftw)
+- Bug #35: Update command syntax in `testing.md` to remove redundant 'run' prefix for Composer scripts (@terabytesoftw)
 
 ## 0.1.1 January 25, 2026
 
