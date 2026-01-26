@@ -78,5 +78,5 @@ composer tests -- --coverage-html code_coverage
 Example: run PHPStan with a different memory limit:
 
 ```bash
-composer run static -- --memory-limit=512M
+composer static -- --memory-limit=512M
 ```
