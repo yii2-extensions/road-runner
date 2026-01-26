@@ -3,6 +3,7 @@
 ## 0.1.2 Under development
 
 - Bug #33: Update examples in `testing.md` for running Composer script with arguments (@terabytesoftw)
+- Bug #34: Correct command syntax for running PHPStan in `testing.md` (@terabytesoftw)
 
 ## 0.1.1 January 25, 2026
 
