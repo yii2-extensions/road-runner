@@ -2,6 +2,8 @@
 
 ## 0.1.2 Under development
 
+- Bug #33: Update examples in `testing.md` for running Composer script with arguments (@terabytesoftw)
+
 ## 0.1.1 January 25, 2026
 
 - Bug #25: Update workflows and documentation for improved CI/CD processes and feature clarity (@terabytesoftw)
@@ -10,7 +12,7 @@
 - Bug #28: Update `symplify/easy-coding-standard` requirement from `^12.5` to `^13.0` (@dependabot)
 - Bug #29: Update license badge style in `README.md` (@terabytesoftw)
 - Bug #30: Adjust viewBox dimensions for mobile and desktop SVGs for improved layout (@terabytesoftw)
-- Enh #31: Add `php-forge/coding-standard` to development dependencies for code quality checks and add support `PHP 8.5` (@terabytesoftw)
+- Enh #32: Add `php-forge/coding-standard` to development dependencies for code quality checks and add support `PHP 8.5` (@terabytesoftw)
 
 ## 0.1.0 October 8, 2025
 
