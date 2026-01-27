@@ -6,6 +6,7 @@
 - Bug #34: Correct command syntax for running PHPStan in `testing.md` (@terabytesoftw)
 - Bug #35: Update command syntax in `testing.md` to remove redundant 'run' prefix for Composer scripts (@terabytesoftw)
 - Bug #36: Update command syntax in `development.md` and `testing.md` for clarity and consistency (@terabytesoftw)
+- Bug #37: Update Rector command in `composer.json` to remove unnecessary 'src' argument (@terabytesoftw)
 
 ## 0.1.1 January 25, 2026
 
