@@ -9,18 +9,18 @@ scenarios.
 
 ### Constructor parameters
 
-`RoadRunner` class accepts a `StatelessApplication` instance.
+`RoadRunner` class accepts an `Application` instance.
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-use yii2\extensions\psrbridge\http\StatelessApplication;
+use yii2\extensions\psrbridge\http\Application;
 use yii2\extensions\roadrunner\RoadRunner;
 
 
-$app = new StatelessApplication($config);
+$app = new Application($config);
 $runner = new RoadRunner($app);
 ```
 
@@ -29,7 +29,7 @@ $runner = new RoadRunner($app);
 Configure automatic worker restart based on memory usage.
 
 ```php
-$app = new StatelessApplication($config);
+$app = new Application($config);
 
 // set memory limit in bytes (default: 128MB)
 $app->setMemoryLimit(256 * 1024 * 1024); // 256MB

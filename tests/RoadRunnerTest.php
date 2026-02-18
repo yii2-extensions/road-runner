@@ -16,14 +16,15 @@ use yii2\extensions\roadrunner\RoadRunner;
 use yii2\extensions\roadrunner\tests\support\TestCase;
 
 /**
- * Test suite for {@see RoadRunner} core bridge functionality.
- *
- * Validates integration and behavior of the RoadRunner bridge within Yii2 applications.
+ * Unit tests for the {@see RoadRunner} worker runtime integration.
  *
  * Test coverage.
- * - Confirms error handling and event emission during request processing.
- * - Ensures correct initialization and teardown of RoadRunner environment.
- * - Verifies HTTP request/response handling and worker lifecycle management.
+ * - Ensures `run()` formats worker error messages from thrown exceptions.
+ * - Ensures `run()` handles exceptions during request processing and returns `ExitCode::OK`.
+ * - Ensures `run()` returns `ExitCode::OK` after successfully handling a request.
+ * - Ensures `run()` returns `ExitCode::OK` when the worker returns `null`.
+ * - Verifies `run()` calls `WorkerInterface::stop()` when the application is clean.
+ * - Verifies `run()` does not call `WorkerInterface::stop()` when the application is not clean.
  *
  * @copyright Copyright (C) 2025 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
@@ -66,9 +67,9 @@ final class RoadRunnerTest extends TestCase
             ->expects(self::once())
             ->method('stop');
 
-        $app = $this->statelessApplication();
+        $app = $this->application();
 
-        // set a very low memory limit to force 'clean()' to return 'true', current memory usage will always be
+        // set a very low memory limit to force 'clean()' to return `true`, current memory usage will always be
         // '>= 90%' of '1' byte
         $app->setMemoryLimit(1);
 
@@ -117,9 +118,9 @@ final class RoadRunnerTest extends TestCase
             ->expects(self::never())
             ->method('stop');
 
-        $app = $this->statelessApplication();
+        $app = $this->application();
 
-        // set a very high memory limit to force 'clean()' to return 'false', current memory usage will never be
+        // set a very high memory limit to force 'clean()' to return `false`, current memory usage will never be
         // '>= 90%' of 'PHP_INT_MAX'
         $app->setMemoryLimit(PHP_INT_MAX);
 
@@ -168,7 +169,7 @@ final class RoadRunnerTest extends TestCase
             ->method('respond')
             ->willThrowException($testException);
 
-        // capture the exact error message passed to 'worker->error()'
+        // capture the exact error message passed to `worker->error()`
         $expectedErrorPattern = sprintf(
             "['%s'] '%s' in '%s:%d'\nStack trace:\n'%s'",
             Exception::class,
@@ -183,7 +184,7 @@ final class RoadRunnerTest extends TestCase
             ->method('error')
             ->with(self::identicalTo($expectedErrorPattern));
 
-        $app = $this->statelessApplication();
+        $app = $this->application();
 
         $roadRunner = new RoadRunner($app);
 
@@ -230,7 +231,7 @@ final class RoadRunnerTest extends TestCase
             ->method('error')
             ->with(self::stringContains('An error occurred during request processing.'));
 
-        $app = $this->statelessApplication();
+        $app = $this->application();
 
         $roadRunner = new RoadRunner($app);
         $result = $roadRunner->run();
@@ -278,7 +279,7 @@ final class RoadRunnerTest extends TestCase
             ->method('respond')
             ->with(self::isInstanceOf(ResponseInterface::class));
 
-        $app = $this->statelessApplication();
+        $app = $this->application();
 
         $roadRunner = new RoadRunner($app);
 
@@ -312,7 +313,7 @@ final class RoadRunnerTest extends TestCase
             ->method('waitRequest')
             ->willReturn(null);
 
-        $app = $this->statelessApplication();
+        $app = $this->application();
 
         $roadRunner = new RoadRunner($app);
 
