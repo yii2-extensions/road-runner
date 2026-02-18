@@ -135,7 +135,7 @@ vendor/bin/rr get
 ```
 
 > [!IMPORTANT]
-> Your applicaion will be available at `http://127.0.0.1:8080` (or `http://localhost:8080`) or at the address set in
+> Your application will be available at `http://127.0.0.1:8080` (or `http://localhost:8080`) or at the address set in
 > `http.address` in `.rr.yaml`.
 
 ### Development & Debugging
