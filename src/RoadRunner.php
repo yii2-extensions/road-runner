@@ -7,28 +7,23 @@ namespace yii2\extensions\roadrunner;
 use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Throwable;
 use yii\web\IdentityInterface;
-use yii2\extensions\psrbridge\http\{ServerExitCode, StatelessApplication};
+use yii2\extensions\psrbridge\http\{Application, ServerExitCode};
 
 use function sprintf;
 
 /**
- * RoadRunner runtime integration for Yii2 Stateless Application.
+ * Runs the RoadRunner request loop for a Yii PSR bridge application.
  *
- * Provides a request loop for handling PSR-7 requests from a RoadRunner worker, delegating processing to a
- * {@see StatelessApplication} instance and emitting PSR-7 responses.
+ * Usage example:
+ * ```php
+ * $config = require dirname(__DIR__) . '/config/web.php';
  *
- * This class manages the lifecycle of the RoadRunner worker, including request handling, response emission, and
- * automatic shutdown when the application state is clean.
+ * $app = new \yii2\extensions\psrbridge\http\Application($config);
+ * $runner = new \yii2\extensions\roadrunner\RoadRunner($app);
+ * $exitCode = $runner->run();
+ * ```
  *
- * All exceptions are caught and reported to the worker for error handling.
- *
- * Key features.
- * - Ensures clean shutdown and error reporting to the RoadRunner worker.
- * - Executes the RoadRunner request loop for stateless Yii2 applications.
- * - Handles incoming PSR-7 requests and emits PSR-7 responses.
- * - Integrates with the application container for worker instantiation.
- *
- * @see StatelessApplication for the Stateless Application implementation.
+ * @see Application for the PSR bridge application implementation.
  *
  * @copyright Copyright (C) 2025 Terabytesoftw.
  * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
@@ -43,32 +38,21 @@ final class RoadRunner
     /**
      * Creates a new instance of the {@see RoadRunner} class.
      *
-     * @param StatelessApplication $app Stateless Application instance.
+     * @param Application $app PSR bridge application instance.
      *
      * @throws Throwable if the worker cannot be instantiated from the container.
      *
-     * @phpstan-param StatelessApplication<IdentityInterface> $app
+     * @phpstan-param Application<IdentityInterface> $app
      */
-    public function __construct(private readonly StatelessApplication $app)
+    public function __construct(private readonly Application $app)
     {
         $this->worker = $this->app->container()->get(PSR7WorkerInterface::class);
     }
 
     /**
-     * Executes the RoadRunner request loop for the configured {@see StatelessApplication} instance.
-     *
-     * Handles incoming PSR-7 requests from the RoadRunner worker, delegates processing to the Stateless Application,
-     * and emits PSR-7 responses. Automatically shuts down the worker if the application state is clean after handling
-     * a request.
-     *
-     * Exceptions are caught and reported to the RoadRunner worker for error handling.
+     * Processes requests from the configured {@see Application} instance until the worker returns `null`.
      *
      * @return int Exit code indicating successful execution ({@see ServerExitCode::OK}).
-     *
-     * Usage example:
-     * ```php
-     * $exitCode = $runner->run();
-     * ```
      */
     public function run(): int
     {

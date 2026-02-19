@@ -57,7 +57,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use yii2\extensions\psrbridge\http\StatelessApplication;
+use yii2\extensions\psrbridge\http\Application;
 use yii2\extensions\roadrunner\RoadRunner;
 
 // production default (change to 'true' for development)
@@ -69,7 +69,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 $config = require dirname(__DIR__) . '/config/web.php';
 
-$runner = new RoadRunner(new StatelessApplication($config));
+$runner = new RoadRunner(new Application($config));
 
 $runner->run();
 ```
@@ -135,7 +135,7 @@ vendor/bin/rr get
 ```
 
 > [!IMPORTANT]
-> Your applicaion will be available at `http://127.0.0.1:8080` (or `http://localhost:8080`) or at the address set in
+> Your application will be available at `http://127.0.0.1:8080` (or `http://localhost:8080`) or at the address set in
 > `http.address` in `.rr.yaml`.
 
 ### Development & Debugging
