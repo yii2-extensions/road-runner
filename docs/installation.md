@@ -29,7 +29,7 @@ composer require httpsoft/http-message
 Install the extension.
 
 ```bash
-composer require yii2-extensions/road-runner:^0.1.0@dev
+composer require yii2-extensions/road-runner:^0.2
 ```
 
 ### Method 2: Manual installation
@@ -39,7 +39,7 @@ Add to your `composer.json`.
 ```json
 {
     "require": {
-        "yii2-extensions/road-runner": "^0.1.0@dev"
+        "yii2-extensions/road-runner": "^0.2"
     }
 }
 ```
