@@ -3,6 +3,7 @@
 ## 0.2.0 Under development
 
 - Bug #40: Rename PSR bridge references `yii2-extensions/psr-bridge` from `StatelessApplication` to `Application` across code and documentation (@terabytesoftw)
+- Bug #42: Update `yii2-extensions/psr-bridge` to `0.2.0` in `composer.json` (@terabytesoftw)
 
 ## 0.1.2 January 27, 2026
 
