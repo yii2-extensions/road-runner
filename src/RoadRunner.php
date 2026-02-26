@@ -32,24 +32,13 @@ use function sprintf;
 final class RoadRunner
 {
     /**
-     * RoadRunner PSR-7 worker instance for handling requests.
-     */
-    private readonly PSR7WorkerInterface $worker;
-
-    /**
      * Creates a new instance of the {@see RoadRunner} class.
      *
      * @param Application $app PSR bridge application instance.
      *
-     * @throws Throwable if the worker cannot be instantiated from the container.
-     *
      * @phpstan-param Application<IdentityInterface> $app
      */
-    public function __construct(private readonly Application $app)
-    {
-        $app->bootstrapContainer();
-        $this->worker = Yii::$container->get(PSR7WorkerInterface::class);
-    }
+    public function __construct(private readonly Application $app) {}
 
     /**
      * Processes requests from the configured {@see Application} instance until the worker returns `null`.
@@ -58,13 +47,15 @@ final class RoadRunner
      */
     public function run(): int
     {
-        while (($request = $this->worker->waitRequest()) !== null) {
+        $worker = Yii::$container->get(PSR7WorkerInterface::class);
+
+        while (($request = $worker->waitRequest()) !== null) {
             try {
                 $response = $this->app->handle($request);
-                $this->worker->respond($response);
+                $worker->respond($response);
 
                 if ($this->app->clean()) {
-                    $this->worker->getWorker()->stop();
+                    $worker->getWorker()->stop();
                 }
             } catch (Throwable $e) {
                 $error = sprintf(
@@ -76,7 +67,7 @@ final class RoadRunner
                     $e->getTraceAsString(),
                 );
 
-                $this->worker->getWorker()->error($error);
+                $worker->getWorker()->error($error);
             }
         }
 

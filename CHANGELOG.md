@@ -2,7 +2,7 @@
 
 ## 0.3.0 Under development
 
-- Bug #44: Update `RoadRunner` constructor to `bootstrapContainer()` before worker instantiation (@terabytesoftw)
+- Bug #45: Move worker resolution to `RoadRunner` constructor and remove application container bootstrapping from the runner loop to keep application initialization inside `Application` class (@terabytesoftw)
 
 ## 0.2.0 February 20, 2026
 
