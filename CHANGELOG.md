@@ -1,6 +1,8 @@
 # ChangeLog
 
-## 0.2.1 Under development
+## 0.3.0 Under development
+
+- Bug #43: Update `RoadRunner` constructor to `bootstrapCcontainer()` before worker instantiation (@terabytesoftw)
 
 ## 0.2.0 February 20, 2026
 

@@ -6,6 +6,7 @@ namespace yii2\extensions\roadrunner;
 
 use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Throwable;
+use Yii;
 use yii\web\IdentityInterface;
 use yii2\extensions\psrbridge\http\{Application, ServerExitCode};
 
@@ -46,7 +47,8 @@ final class RoadRunner
      */
     public function __construct(private readonly Application $app)
     {
-        $this->worker = $this->app->container()->get(PSR7WorkerInterface::class);
+        $app->bootstrapContainer();
+        $this->worker = Yii::$container->get(PSR7WorkerInterface::class);
     }
 
     /**
