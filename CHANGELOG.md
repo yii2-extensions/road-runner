@@ -1,6 +1,6 @@
 # ChangeLog
 
-## 0.3.0 Under development
+## 0.3.0 February 28, 2026
 
 - Bug #45: Move worker resolution to `RoadRunner::run()` method and remove application container bootstrapping from the runner loop to keep application initialization inside `Application` class (@terabytesoftw)
 

@@ -1,11 +1,13 @@
 {
     "name": "yii2-extensions/road-runner",
     "type": "library",
-    "description": "Yii2 Road Runner runtime.",
+    "description": "High-performance RoadRunner runtime for Yii2 applications.",
     "keywords": [
         "yii2-extension",
-        "road-runner",
-        "runtime"
+        "roadrunner",
+        "runtime",
+        "http-server",
+        "psr-7"
     ],
     "license": "BSD-3-Clause",
     "require": {
@@ -13,11 +15,11 @@
         "ext-sockets": "*",
         "psr/http-factory": "^1.1",
         "psr/http-message": "^2.0",
-        "spiral/roadrunner": "^2025.1.2",
+        "spiral/roadrunner": "^2025.1.8",
         "spiral/roadrunner-cli": "^2.7",
-        "spiral/roadrunner-http": "^v4.0",
+        "spiral/roadrunner-http": "^v4.1",
         "spiral/roadrunner-worker": "^3.6",
-        "yii2-extensions/psr-bridge": "^0.3@dev"
+        "yii2-extensions/psr-bridge": "^0.3"
     },
     "require-dev": {
         "infection/infection": "^0.27|^0.32",
@@ -41,7 +43,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.3.x-dev"
+            "dev-main": "0.4.x-dev"
         }
     },
     "config": {

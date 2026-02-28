@@ -43,7 +43,7 @@ Explore the ready-to-run Yii2 + RoadRunner application template.
 ## Installation
 
 ```bash
-composer require yii2-extensions/road-runner:^0.2
+composer require yii2-extensions/road-runner:^0.3
 ```
 
 ### Basic Usage
