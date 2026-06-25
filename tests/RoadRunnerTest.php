@@ -275,6 +275,62 @@ final class RoadRunnerTest extends TestCase
         );
     }
 
+    public function testRunMethodDoesNotReportWorkerErrorWhenAfterSendFailsAfterRespond(): void
+    {
+        Event::on(
+            Response::class,
+            Response::EVENT_AFTER_SEND,
+            static function (): void {
+                throw new Exception('After-send failed.');
+            },
+        );
+
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('waitRequest')
+            ->willReturn($request);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->with(self::isInstanceOf(ResponseInterface::class));
+        $this->worker
+            ->expects(self::never())
+            ->method('error');
+
+        $app = $this->application();
+
+        $app->setMemoryLimit(PHP_INT_MAX);
+
+        $roadRunner = new RoadRunner($app);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('After-send failed.');
+
+        $roadRunner->run();
+    }
+
     public function testRunMethodFormatsErrorMessageCorrectly(): void
     {
         $request = new ServerRequest(

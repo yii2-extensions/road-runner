@@ -43,6 +43,14 @@ final class RoadRunner
     /**
      * Processes requests from the configured {@see Application} instance until the worker returns `null`.
      *
+     * Reports failures through `error()` only while the response has not been emitted: once `respond()` succeeds, the
+     * worker has already received the response, so {@see Application::finalize()} runs after the `try` block.
+     *
+     * An after-send failure then propagates to recycle the worker instead of reporting a second outcome through
+     * `error()`, which the RoadRunner protocol forbids for an already-responded request.
+     *
+     * @throws Throwable When an after-send handler fails after the response has been emitted.
+     *
      * @return int Exit code indicating successful execution ({@see ServerExitCode::OK}).
      */
     public function run(): int
@@ -52,12 +60,8 @@ final class RoadRunner
         while (($request = $worker->waitRequest()) !== null) {
             try {
                 $response = $this->app->handle($request);
-                $worker->respond($response);
-                $this->app->finalize();
 
-                if ($this->app->clean()) {
-                    $worker->getWorker()->stop();
-                }
+                $worker->respond($response);
             } catch (Throwable $e) {
                 $this->app->finalize(false);
 
@@ -71,6 +75,14 @@ final class RoadRunner
                 );
 
                 $worker->getWorker()->error($error);
+
+                continue;
+            }
+
+            $this->app->finalize();
+
+            if ($this->app->clean()) {
+                $worker->getWorker()->stop();
             }
         }
 
