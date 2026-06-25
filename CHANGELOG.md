@@ -1,6 +1,8 @@
 # ChangeLog
 
-## 0.3.1 Under development
+## 0.4.0 Under development
+
+- Bug #47: Complete the Yii response lifecycle after RoadRunner emits PSR responses and update `yii2-extensions/psr-bridge` to `0.4` (@terabytesoftw)
 
 ## 0.3.0 February 28, 2026
 
