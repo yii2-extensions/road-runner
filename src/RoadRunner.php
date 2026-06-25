@@ -53,11 +53,14 @@ final class RoadRunner
             try {
                 $response = $this->app->handle($request);
                 $worker->respond($response);
+                $this->app->finalize();
 
                 if ($this->app->clean()) {
                     $worker->getWorker()->stop();
                 }
             } catch (Throwable $e) {
+                $this->app->finalize(false);
+
                 $error = sprintf(
                     "['%s'] '%s' in '%s:%d'\nStack trace:\n'%s'",
                     $e::class,

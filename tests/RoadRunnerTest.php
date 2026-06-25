@@ -9,9 +9,10 @@ use PHPUnit\Framework\Attributes\Group;
 use Psr\Http\Message\ResponseInterface;
 use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunner\WorkerInterface;
-use yii\base\{Exception, InvalidConfigException};
+use yii\base\{Event, Exception, InvalidConfigException};
 use yii\console\ExitCode;
 use yii\di\NotInstantiableException;
+use yii2\extensions\psrbridge\http\Response;
 use yii2\extensions\roadrunner\RoadRunner;
 use yii2\extensions\roadrunner\tests\support\TestCase;
 
@@ -80,6 +81,146 @@ final class RoadRunnerTest extends TestCase
             $roadRunner->run(),
             "RoadRunner 'run()' method should return 'ExitCode::OK' after calling worker stop when application is "
             . 'clean.',
+        );
+    }
+
+    public function testRunMethodCleansResponseLifecycleWhenRespondFails(): void
+    {
+        $afterSendEvents = [];
+
+        Event::on(
+            Response::class,
+            Response::EVENT_AFTER_SEND,
+            static function () use (&$afterSendEvents): void {
+                $afterSendEvents[] = 'afterSend';
+            },
+        );
+
+        self::assertTrue(
+            Event::hasHandlers(Response::class, Response::EVENT_AFTER_SEND),
+            'Test setup should register an after-send handler before RoadRunner handles the request.',
+        );
+
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+        $exception = new Exception('Respond failed.');
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::exactly(2))
+            ->method('waitRequest')
+            ->willReturnOnConsecutiveCalls($request, null);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->willThrowException($exception);
+        $this->worker
+            ->expects(self::once())
+            ->method('error')
+            ->with(self::stringContains('Respond failed.'));
+
+        $app = $this->application();
+
+        $app->setMemoryLimit(PHP_INT_MAX);
+
+        $roadRunner = new RoadRunner($app);
+
+        self::assertSame(
+            ExitCode::OK,
+            $roadRunner->run(),
+            "RoadRunner run method should return 'ExitCode::OK' after reporting response emission failure.",
+        );
+        self::assertSame(
+            [],
+            $afterSendEvents,
+            'RoadRunner should clean lifecycle handlers without firing after-send when respond fails.',
+        );
+        self::assertFalse(
+            Event::hasHandlers(Response::class, Response::EVENT_AFTER_SEND),
+            'RoadRunner should remove response lifecycle event handlers when RoadRunner response emission fails.',
+        );
+        self::assertFalse(
+            $app->response->isSent,
+            'RoadRunner should not mark the Yii response sent when RoadRunner response emission fails.',
+        );
+    }
+
+    public function testRunMethodCompletesResponseLifecycleAfterRespond(): void
+    {
+        $afterSendEvents = [];
+
+        Event::on(
+            Response::class,
+            Response::EVENT_AFTER_SEND,
+            static function () use (&$afterSendEvents): void {
+                $afterSendEvents[] = 'afterSend';
+            },
+        );
+
+        $request = new ServerRequest(
+            serverParams: [
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/site/index',
+            ],
+            method: 'GET',
+            uri: new Uri('http://localhost/'),
+        );
+
+        $this->worker = $this->createMock(WorkerInterface::class);
+        $this->psr7Worker = $this->createPartialMock(
+            PSR7Worker::class,
+            [
+                'waitRequest',
+                'respond',
+                'getWorker',
+            ],
+        );
+
+        $this->psr7Worker
+            ->method('getWorker')
+            ->willReturn($this->worker);
+        $this->psr7Worker
+            ->expects(self::exactly(2))
+            ->method('waitRequest')
+            ->willReturnOnConsecutiveCalls($request, null);
+        $this->psr7Worker
+            ->expects(self::once())
+            ->method('respond')
+            ->with(self::isInstanceOf(ResponseInterface::class));
+
+        $app = $this->application();
+
+        $app->setMemoryLimit(PHP_INT_MAX);
+
+        $roadRunner = new RoadRunner($app);
+
+        self::assertSame(
+            ExitCode::OK,
+            $roadRunner->run(),
+            "RoadRunner run method should return 'ExitCode::OK' after completing response lifecycle.",
+        );
+        self::assertSame(
+            ['afterSend'],
+            $afterSendEvents,
+            'RoadRunner should complete Yii response lifecycle after responding with the PSR response.',
         );
     }
 
