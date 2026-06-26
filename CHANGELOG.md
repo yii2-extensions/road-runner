@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - docs(changelog): convert changelog entries to Conventional Commits format.
 - fix: complete the Yii response lifecycle after RoadRunner emits PSR responses and update `yii2-extensions/psr-bridge` to `0.4`.
 - chore: align scaffold metadata, GitHub Actions quality and security workflows, and CodeRabbit review configuration with the current repository pattern.
+- chore: add social media links to `README.md`.
 
 ## 0.3.0 February 28, 2026
 
