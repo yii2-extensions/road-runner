@@ -1,18 +1,20 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# Repo-specific config for yii2-extensions/road-runner
 language: en-US
-tone_instructions: ""
+tone_instructions: |
+  Be concise and direct. Lead with the issue and the fix. Focus on bugs in the
+  RoadRunner worker loop, PSR-7 response emission, Yii response lifecycle cleanup,
+  long-lived worker state isolation, and backward compatibility.
 early_access: true
 enable_free_tier: true
-inheritance: true
+inheritance: false
 reviews:
   profile: assertive
   request_changes_workflow: true
   high_level_summary: true
-  high_level_summary_instructions: ""
   high_level_summary_placeholder: "@coderabbitai summary"
   high_level_summary_in_walkthrough: true
   auto_title_placeholder: "@coderabbitai"
-  auto_title_instructions: ""
   review_status: true
   review_details: true
   commit_status: true
@@ -25,54 +27,108 @@ reviews:
   related_issues: true
   related_prs: true
   suggested_labels: true
-  labeling_instructions: []
+  labeling_instructions:
+    - label: "bug"
+      instructions: "Apply when the PR fixes incorrect behavior, an exception, or a regression."
+    - label: "enhancement"
+      instructions: "Apply when the PR adds a new feature, capability, or public API."
+    - label: "documentation"
+      instructions: "Apply when the PR only changes docs/, README, or PHPDoc."
+    - label: "dependencies"
+      instructions: "Apply when composer.json or composer.lock changes."
+    - label: "github_actions"
+      instructions: "Apply when files under .github/workflows/ change."
+    - label: "php"
+      instructions: "Apply when the PR changes PHP source files (src/, tests/, or any *.php)."
   auto_apply_labels: true
   suggested_reviewers: true
   auto_assign_reviewers: false
   in_progress_fortune: true
   poem: true
   enable_prompt_for_ai_agents: true
-  path_filters: []
-  path_instructions: []
+  path_filters:
+    - "!vendor/**"
+    - "!.phpunit.cache/**"
+    - "!build/**"
+    - "!coverage/**"
+    - "!code_coverage/**"
+    - "!runtime/**"
+  path_instructions:
+    - path: "src/**/*.php"
+      instructions: |
+        RoadRunner runtime adapter for Yii2 PSR bridge applications (namespace
+        yii2\extensions\roadrunner\, PSR-4 -> src/). Target PHP >= 8.1. Enforce
+        declare(strict_types=1) and full type declarations. Respect the repo's existing
+        toolchain: php-forge/coding-standard (ECS, built on phpcs) and phpstan
+        strict-rules. Do NOT suggest changes that conflict with phpstan.neon, ecs.php,
+        or rector.php.
+        Public API is intentionally small: RoadRunner::__construct(Application $app) and
+        RoadRunner::run(). Flag changes to public signatures, constructor behavior,
+        returned exit codes, or worker lifecycle semantics, and call out backward-
+        incompatible changes explicitly (pre-1.0, so they land in minor releases, but
+        must be intentional and documented).
+    - path: "src/RoadRunner.php"
+      instructions: |
+        RoadRunner worker loop. Resolve PSR7WorkerInterface inside run() after the PSR
+        bridge Application bootstraps its container. Respect the RoadRunner protocol:
+        waitRequest() yields requests until null, respond() sends exactly one PSR-7
+        response per request, error() is only valid before a response has been emitted,
+        and stop() is used only when Application::clean() requests worker recycling.
+        The Yii response lifecycle must be completed after successful respond() by
+        calling Application::finalize() outside the try block. On request handling or
+        respond() failures, call Application::finalize(false), report the formatted
+        worker error, and continue. If an after-send handler fails after respond(), let
+        the exception propagate instead of reporting a second RoadRunner outcome.
+    - path: "tests/**/*.php"
+      instructions: |
+        PHPUnit 10.5 tests; the repo also runs Infection (mutation testing). Cover new
+        public behavior plus failure paths. For worker scenarios, assert state isolation
+        across consecutive requests on the same Application instance, lifecycle cleanup
+        after failed response emission, and that no worker error is reported after a
+        response has already been sent. No real network/DB; use mocks and meaningful,
+        mutation-test-friendly assertions (no empty test bodies).
+    - path: "composer.json"
+      instructions: |
+        Library manifest. Keep require/require-dev accurate (the repo runs
+        composer-require-checker): no unused or undeclared dependencies. Respect the
+        supported ranges php >=8.1, ext-sockets, spiral/roadrunner packages, and
+        yii2-extensions/psr-bridge ^0.4@dev unless an intentional compatibility change
+        is documented.
+    - path: "docs/**/*.md"
+      instructions: |
+        Documentation (installation, configuration, development, testing). Ensure code
+        samples match the current public API, RoadRunner entrypoint setup, and PSR bridge
+        lifecycle behavior.
   abort_on_close: true
-  disable_cache: false
   auto_review:
     enabled: true
-    description_keyword: ""
     auto_incremental_review: true
     auto_pause_after_reviewed_commits: 5
-    ignore_title_keywords: []
-    labels: []
-    drafts: false
-    base_branches: []
-    ignore_usernames: []
   finishing_touches:
     docstrings:
       enabled: true
     unit_tests:
       enabled: true
-    custom: []
   pre_merge_checks:
     docstrings:
       mode: warning
       threshold: 80
     title:
       mode: warning
-      requirements: ""
     description:
       mode: warning
     issue_assessment:
       mode: warning
-    custom_checks: []
   tools:
+    # --- Core for this PHP library ---
     ast-grep:
-      rule_dirs: []
-      util_dirs: []
       essential_rules: true
-      packages: []
-    shellcheck:
+    phpstan:
       enabled: true
-    ruff:
+    phpcs:
+      enabled: true
+    # --- CI / docs / security (relevant to this repo) ---
+    shellcheck:
       enabled: true
     markdownlint:
       enabled: true
@@ -81,97 +137,90 @@ reviews:
       timeout_ms: 90000
     languagetool:
       enabled: true
-      enabled_rules: []
-      disabled_rules: []
-      enabled_categories: []
-      disabled_categories: []
-      enabled_only: false
-      level: default
-    biome:
-      enabled: true
-    hadolint:
-      enabled: true
-    swiftlint:
-      enabled: true
-    phpstan:
-      enabled: true
-      level: default
-    phpmd:
-      enabled: true
-    phpcs:
-      enabled: true
-    golangci-lint:
-      enabled: true
     yamllint:
+      enabled: true
+    actionlint:
       enabled: true
     gitleaks:
       enabled: true
     trufflehog:
       enabled: true
-    checkov:
-      enabled: true
-    tflint:
-      enabled: true
-    detekt:
-      enabled: true
-    eslint:
-      enabled: true
-    flake8:
-      enabled: true
-    fortitudeLint:
-      enabled: true
-    rubocop:
-      enabled: true
-    buf:
-      enabled: true
-    regal:
-      enabled: true
-    actionlint:
-      enabled: true
-    pmd:
-      enabled: true
-    clang:
-      enabled: true
-    cppcheck:
-      enabled: true
-    opengrep:
+    osvScanner:
       enabled: true
     semgrep:
       enabled: true
-    circleci:
+    opengrep:
       enabled: true
-    clippy:
-      enabled: true
-    sqlfluff:
-      enabled: true
-    trivy:
-      enabled: true
-    prismaLint:
-      enabled: true
-    pylint:
-      enabled: true
+    # --- Disabled: redundant with this repo's toolchain (ECS/phpcs + phpstan strict) ---
+    phpmd:
+      enabled: false
+    # --- Disabled: no Docker / JS / CSS / other languages in this repo ---
+    hadolint:
+      enabled: false
+    biome:
+      enabled: false
+    eslint:
+      enabled: false
     oxc:
-      enabled: true
-    shopifyThemeCheck:
-      enabled: true
-    luacheck:
-      enabled: true
-    brakeman:
-      enabled: true
-    dotenvLint:
-      enabled: true
-    htmlhint:
-      enabled: true
+      enabled: false
     stylelint:
-      enabled: true
-    checkmake:
-      enabled: true
-    osvScanner:
-      enabled: true
-    blinter:
-      enabled: true
+      enabled: false
+    htmlhint:
+      enabled: false
+    flake8:
+      enabled: false
+    ruff:
+      enabled: false
+    pylint:
+      enabled: false
+    swiftlint:
+      enabled: false
+    golangci-lint:
+      enabled: false
+    detekt:
+      enabled: false
+    fortitudeLint:
+      enabled: false
+    rubocop:
+      enabled: false
+    brakeman:
+      enabled: false
+    buf:
+      enabled: false
+    regal:
+      enabled: false
+    pmd:
+      enabled: false
+    clang:
+      enabled: false
+    cppcheck:
+      enabled: false
+    clippy:
+      enabled: false
+    sqlfluff:
+      enabled: false
+    prismaLint:
+      enabled: false
+    shopifyThemeCheck:
+      enabled: false
+    luacheck:
+      enabled: false
     psscriptanalyzer:
-      enabled: true
+      enabled: false
+    blinter:
+      enabled: false
+    checkmake:
+      enabled: false
+    dotenvLint:
+      enabled: false
+    circleci:
+      enabled: false
+    checkov:
+      enabled: false
+    tflint:
+      enabled: false
+    trivy:
+      enabled: false
 chat:
   art: true
   auto_reply: true
@@ -181,34 +230,48 @@ chat:
     linear:
       usage: auto
 knowledge_base:
-  opt_out: false
   web_search:
     enabled: true
   code_guidelines:
     enabled: true
-    filePatterns: []
+    filePatterns:
+      - "**/CONTRIBUTING.md"
+      - "**/.github/CONTRIBUTING.md"
+      - "**/phpcs.xml*"
+      - "**/phpstan.neon*"
+      - "**/rector.php"
+      - "**/docs/testing.md"
   learnings:
-    scope: global
+    scope: auto
   issues:
     scope: auto
   jira:
     usage: auto
-    project_keys: []
   linear:
     usage: auto
-    team_keys: []
   pull_requests:
     scope: auto
   mcp:
     usage: auto
-    disabled_servers: []
-  linked_repositories: []
 code_generation:
   docstrings:
     language: en-US
-    path_instructions: []
+    path_instructions:
+      - path: "src/**/*.php"
+        instructions: |
+          Write PHPDoc in English. Document @param/@return/@throws with concrete types
+          matching the PHP type hints. Use precise phpstan collection/shape syntax for
+          arrays (e.g. array<string, mixed> for maps, array{foo: string, bar?: int} for
+          shapes). Mention RoadRunner protocol or Yii response lifecycle constraints when
+          they affect behavior.
   unit_tests:
-    path_instructions: []
+    path_instructions:
+      - path: "tests/**/*.php"
+        instructions: |
+          Generate PHPUnit 10.5 tests using the project's existing base TestCase and
+          conventions. Cover happy path plus edge/failure cases for worker lifecycle,
+          response emission, and cleanup. No real network or DB; use mocks. Write
+          assertions strong enough to survive Infection mutation testing.
 issue_enrichment:
   auto_enrich:
     enabled: true
@@ -216,7 +279,14 @@ issue_enrichment:
     enabled: true
     auto_planning:
       enabled: true
-      labels: []
   labeling:
-    labeling_instructions: []
+    labeling_instructions:
+      - label: "bug"
+        instructions: "Apply when the issue reports incorrect behavior, an error, or a regression."
+      - label: "enhancement"
+        instructions: "Apply when the issue requests a new feature or capability."
+      - label: "documentation"
+        instructions: "Apply when the issue is about docs, README, or guides."
+      - label: "question"
+        instructions: "Apply when the issue is a usage question or asks for clarification rather than reporting a defect."
     auto_apply_labels: true

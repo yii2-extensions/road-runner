@@ -1,0 +1,2 @@
+[codespell]
+skip = ./.git,./.claude/**,./.codex/**,./.phpunit.cache/**,./.vscode/**,./code_coverage/**,./composer.lock,./runtime/**,./vendor/**

@@ -1,0 +1,14 @@
+# Generated coverage output, runtime state, caches, and dependencies.
+.phpunit.cache/**
+code_coverage/**
+runtime/**
+vendor/**
+
+# Dependency lockfile ignored by git.
+composer.lock
+
+# License texts ship verbatim.
+**/LICENSE*
+
+# Tool config maintained by hand to keep array order meaningful.
+composer-require-checker.json
