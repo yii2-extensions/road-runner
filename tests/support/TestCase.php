@@ -24,11 +24,6 @@ use function dirname;
 
 /**
  * Base class for package integration tests.
- *
- * Provides a preconfigured {@see Application} instance with Yii components and PSR-7 factory bindings.
- *
- * @copyright Copyright (C) 2025 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {

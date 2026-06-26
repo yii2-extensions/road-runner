@@ -1,0 +1,7 @@
+{
+    "Exclude": [
+        "^\\.phpunit\\.cache/",
+        "^runtime/",
+        "^vendor/"
+    ]
+}

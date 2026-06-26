@@ -18,17 +18,6 @@ use yii2\extensions\roadrunner\tests\support\TestCase;
 
 /**
  * Unit tests for the {@see RoadRunner} worker runtime integration.
- *
- * Test coverage.
- * - Ensures `run()` formats worker error messages from thrown exceptions.
- * - Ensures `run()` handles exceptions during request processing and returns `ExitCode::OK`.
- * - Ensures `run()` returns `ExitCode::OK` after successfully handling a request.
- * - Ensures `run()` returns `ExitCode::OK` when the worker returns `null`.
- * - Verifies `run()` calls `WorkerInterface::stop()` when the application is clean.
- * - Verifies `run()` does not call `WorkerInterface::stop()` when the application is not clean.
- *
- * @copyright Copyright (C) 2025 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 #[Group('roadrunner')]
 final class RoadRunnerTest extends TestCase

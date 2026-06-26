@@ -1,0 +1,14 @@
+title = "gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow generated, dependency, documented placeholder, and test fixture paths"
+paths = [
+    '''^code_coverage/''',
+    '''^runtime/''',
+    '''^vendor/''',
+    '''^docs/configuration\.md$''',
+    '''^tests/support/TestCase\.php$''',
+]

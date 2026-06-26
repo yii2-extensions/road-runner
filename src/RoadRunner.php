@@ -25,9 +25,6 @@ use function sprintf;
  * ```
  *
  * @see Application for the PSR bridge application implementation.
- *
- * @copyright Copyright (C) 2025 Terabytesoftw.
- * @license https://opensource.org/license/bsd-3-clause BSD 3-Clause License.
  */
 final class RoadRunner
 {
