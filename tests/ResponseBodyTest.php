@@ -135,7 +135,7 @@ final class ResponseBodyTest extends TestCase
     }
 
     /**
-     * @param 'read'|'eof' $method
+     * @param 'eof'|'read' $method
      */
     #[TestWith(['read'])]
     #[TestWith(['eof'])]
