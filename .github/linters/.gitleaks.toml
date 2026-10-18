@@ -4,11 +4,9 @@ title = "gitleaks config"
 useDefault = true
 
 [allowlist]
-description = "Allow generated, dependency, documented placeholder, and test fixture paths"
+description = "Allow generated coverage, runtime state, and dependencies"
 paths = [
     '''^code_coverage/''',
     '''^runtime/''',
     '''^vendor/''',
-    '''^docs/configuration\.md$''',
-    '''^tests/support/TestCase\.php$''',
 ]

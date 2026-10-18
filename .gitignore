@@ -1,6 +1,7 @@
 # AI agents (if present)
 .codex
-.claude
+.claude/*
+!.claude/skills/
 
 # codecoverage (if present)
 code_coverage
@@ -56,3 +57,6 @@ Thumbs.db
 .buildpath
 .project
 .settings
+
+# Private maintainer files
+/internal/

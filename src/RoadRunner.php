@@ -15,15 +15,6 @@ use function sprintf;
 /**
  * Runs the RoadRunner request loop for a Yii PSR bridge application.
  *
- * Usage example:
- * ```php
- * $config = require dirname(__DIR__) . '/config/web.php';
- *
- * $app = new \yii2\extensions\psrbridge\http\Application($config);
- * $runner = new \yii2\extensions\roadrunner\RoadRunner($app);
- * $exitCode = $runner->run();
- * ```
- *
  * @see Application for the PSR bridge application implementation.
  */
 final class RoadRunner
@@ -40,13 +31,15 @@ final class RoadRunner
     /**
      * Processes requests from the configured {@see Application} instance until the worker returns `null`.
      *
-     * Reports failures through `error()` only while the response has not been emitted: once `respond()` succeeds, the
-     * worker has already received the response, so {@see Application::finalize()} runs after the `try` block.
+     * Reports failures through `error()` only while the response has not been emitted. Finalization runs once in
+     * `finally`, passing `false` when processing or emission fails. Memory is checked after either outcome.
      *
-     * An after-send failure then propagates to recycle the worker instead of reporting a second outcome through
-     * `error()`, which the RoadRunner protocol forbids for an already-responded request.
+     * Recycling declines the next dispatch before handling it, allowing RoadRunner to retry it in a fresh worker.
+     * Streaming read and finalization failures propagate after this handshake without a second request outcome;
+     * any transport failure during shutdown is retained as the previous exception. A further emission failure
+     * while closing an already-failed stream propagates immediately after finalization without another outcome.
      *
-     * @throws Throwable When an after-send handler fails after the response has been emitted.
+     * @throws Throwable When streaming, worker transport, or application finalization fails.
      *
      * @return int Exit code indicating successful execution ({@see ServerExitCode::OK}).
      */
@@ -54,32 +47,73 @@ final class RoadRunner
     {
         $worker = Yii::$container->get(PSR7WorkerInterface::class);
 
-        while (($request = $worker->waitRequest()) !== null) {
-            try {
-                $response = $this->app->handle($request);
+        $recycle = false;
+        $failure = null;
 
-                $worker->respond($response);
-            } catch (Throwable $e) {
-                $this->app->finalize(false);
+        try {
+            while (($request = $worker->waitRequest()) !== null) {
+                if ($recycle) {
+                    $worker->getWorker()->stop();
 
-                $error = sprintf(
-                    "['%s'] '%s' in '%s:%d'\nStack trace:\n'%s'",
-                    $e::class,
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine(),
-                    $e->getTraceAsString(),
-                );
+                    continue;
+                }
 
-                $worker->getWorker()->error($error);
+                $success = false;
 
-                continue;
+                try {
+                    $response = $this->app->handle($request);
+
+                    $body = new ResponseBody($response->getBody());
+
+                    $worker->respond($response->withBody($body));
+
+                    $failure = $body->getFailure();
+                    $success = $failure === null;
+                } catch (Throwable $e) {
+                    $readFailure = isset($body) ? $body->getFailure() : null;
+
+                    if ($readFailure !== null && $readFailure !== $e) {
+                        // Emission failed again while closing a stream whose read failure was consumed.
+                        $failure = $readFailure;
+
+                        throw $e;
+                    }
+
+                    $error = sprintf(
+                        "['%s'] '%s' in '%s:%d'\nStack trace:\n'%s'",
+                        $e::class,
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine(),
+                        $e->getTraceAsString(),
+                    );
+
+                    $worker->getWorker()->error($error);
+                } finally {
+                    try {
+                        // Keep a consumed read failure pending while finalizing.
+                        try {
+                            if ($failure !== null) {
+                                throw $failure;
+                            }
+                        } finally {
+                            $this->app->finalize($success);
+                        }
+                    } catch (Throwable $e) {
+                        $failure = $e;
+                        $recycle = true;
+                    }
+
+                    unset($response, $body, $e, $readFailure);
+                }
+
+                if ($failure === null) {
+                    $recycle = $this->app->clean();
+                }
             }
-
-            $this->app->finalize();
-
-            if ($this->app->clean()) {
-                $worker->getWorker()->stop();
+        } finally {
+            if ($failure !== null) {
+                throw $failure;
             }
         }
 

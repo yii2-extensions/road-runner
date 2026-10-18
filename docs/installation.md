@@ -1,80 +1,42 @@
 # Installation guide
 
-## System requirements
+## Requirements
 
-- [`PHP`](https://www.php.net/downloads) 8.1 or higher.
-- [`Composer`](https://getcomposer.org/download/) for dependency management.
-- [`RoadRunner`](https://github.com/roadrunner-server/roadrunner) 2025.1.2 or higher.
-- [`Yii2`](https://github.com/yiisoft/yii2) 2.0.53+ or 22.x.
+- PHP 8.3 or higher with `sockets`, `filter`, and `mbstring` enabled.
+- Composer.
+- RoadRunner `^2025.1.8` with HTTP support.
+- Yii `~2.0.55 || ^22.0@dev`. Check the selected framework's PHP requirements too.
+- A PSR-7/PSR-17 implementation, such as HttpSoft, Nyholm, Guzzle PSR-7, or Laminas Diactoros.
 
-### PSR-7/PSR-17 HTTP Message Factories
+## Install
 
-Install exactly one of the following PSR-7/PSR-17 HTTP message implementations.
-
-- [`guzzlehttp/psr7`](https://github.com/guzzle/psr7)
-- [`httpsoft/http-message`](https://github.com/httpsoft/http-message)
-- [`laminas/laminas-diactoros`](https://github.com/laminas/laminas-diactoros)
-- [`nyholm/psr7`](https://github.com/Nyholm/psr7)
-
-For example, install HttpSoft (recommended for Yii2 applications).
+The examples use HttpSoft. Reuse an existing compatible message implementation if the application already has one.
 
 ```bash
-composer require httpsoft/http-message
+composer require yii2-extensions/road-runner:^0.4 httpsoft/http-message
 ```
 
-## Installation
+Keep Composer's advisory blocking enabled. Review the resolved dependencies, retain `composer.lock`, and run
+`composer audit`. Do not disable advisory checks to force an older Yii installation.
 
-### Method 1: Using [Composer](https://getcomposer.org/download/) (recommended)
+Register the [HTTP worker and message factories](configuration.md#http-worker-and-message-factories), configure
+cookies and sessions, and create the [entry point and `.rr.yaml`](../README.md#basic-usage).
 
-Install the extension.
+## Start RoadRunner
+
+From the application root, obtain a binary compatible with the installed RoadRunner constraint and start it:
 
 ```bash
-composer require yii2-extensions/road-runner:^0.3
-```
-
-### Method 2: Manual installation
-
-Add to your `composer.json`.
-
-```json
-{
-    "require": {
-        "yii2-extensions/road-runner": "^0.3"
-    }
-}
-```
-
-Then run.
-
-```bash
-composer update
-```
-
-### Install RoadRunner binary
-
-```bash
-# download the RoadRunner binary
 vendor/bin/rr get
-
-# or download manually from GitHub releases
-curl -sSL https://github.com/roadrunner-server/roadrunner/releases/latest/download/roadrunner-linux-amd64.tar.gz | tar -xz
+./rr serve
 ```
 
-## Project structure
-
-Organize your project for RoadRunner:
-
-```text
-app-basic/
-├── web/
-│   └── index.php          # RoadRunner entry point
-├── .rr.yaml               # RoadRunner configuration
-└── rr                     # RoadRunner binary
-```
+Use the binary's version output to verify the selected version. The Composer packages alone do not start the server.
+Keep PHP output on the worker's protocol channel free of `echo`, debug dumps, and accidental output.
 
 ## Next steps
 
-Once the installation is complete.
-
-- ⚙️ [Configuration Reference](configuration.md)
-- 🧪 [Testing Guide](testing.md)
+- [Configuration](configuration.md)
+- [Testing](testing.md)
+- [Upgrade actions](../UPGRADE.md)
+- [Agent skill installation](agents.md)

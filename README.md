@@ -46,8 +46,11 @@ Explore the ready-to-run Yii2 + RoadRunner application template.
 ## Installation
 
 ```bash
-composer require yii2-extensions/road-runner:^0.3
+composer require yii2-extensions/road-runner:^0.4 httpsoft/http-message
 ```
+
+Register the [HTTP worker and message factories](docs/configuration.md#http-worker-and-message-factories) before
+starting the entry point. See the [installation guide](docs/installation.md) for runtime setup.
 
 ### Basic Usage
 
@@ -74,7 +77,7 @@ $config = require dirname(__DIR__) . '/config/web.php';
 
 $runner = new RoadRunner(new Application($config));
 
-$runner->run();
+exit($runner->run());
 ```
 
 ### RoadRunner configuration
@@ -90,11 +93,6 @@ server:
     relay: pipes
 http:
     address: "0.0.0.0:8080"
-    # development-only overrides, remove or set to production values for deploys
-    env:
-        YII_DEBUG: true
-        YII_ENV: dev
-
     headers:
         response:
             "Cache-Control": "no-cache"
@@ -188,7 +186,8 @@ final class FileController extends \yii\web\Controller
         $file = UploadedFile::getInstanceByName('avatar');
 
         if ($file !== null && $file->error === UPLOAD_ERR_OK) {
-            $file->saveAs('@webroot/uploads/' . $file->name);
+            // validate the file before saving; choose a server-controlled storage name
+            $file->saveAs('@runtime/uploads/' . bin2hex(random_bytes(16)) . '.bin');
         }
 
         return $this->asJson(['status' => 'uploaded']);
@@ -196,19 +195,37 @@ final class FileController extends \yii\web\Controller
 }
 ```
 
+Create the destination directory and apply your application's upload validation before using this example.
+
 ## Documentation
 
-For detailed configuration options and advanced usage.
+Practical guides and a complete worker example for RoadRunner and PSR-7
+integration.
 
 - 📚 [Installation Guide](docs/installation.md)
-- ⚙️ [Configuration Reference](docs/configuration.md)
+- ⚙️ [Configuration Guide](docs/configuration.md)
+- 💡 [Worker Example](#basic-usage)
+- 🔄 [Upgrade Guide](UPGRADE.md)
 - 🧪 [Testing Guide](docs/testing.md)
-- 🛠️ [Development Guide](docs/development.md)
+
+## AI assistance
+
+AI agents: use the repository guides and source for the installed revision.
+For a [documentation deployment](https://yii2-framework.github.io/docs/) with
+`llms.txt`, read that index first. When Markdown export is enabled, append
+`index.md` to a page URL. For Yii conventions, use the `yii2-framework` skill
+from a local framework documentation checkout.
+
+- 🤖 [yii2-roadrunner-worker skill](docs/agents.md): installation for Claude
+  Code, Codex, and OpenCode.
+
+If the hosted sources are unavailable, use the repository guides and locally
+available skills.
 
 ## Package information
 
-[![PHP](https://img.shields.io/badge/%3E%3D8.1-777BB4.svg?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/releases/8.1/en.php)
-[![Yii 2.0.x](https://img.shields.io/badge/2.0.53-0073AA.svg?style=for-the-badge&logo=yii&logoColor=white)](https://github.com/yiisoft/yii2/tree/2.0.53)
+[![PHP](https://img.shields.io/badge/%3E%3D8.3-777BB4.svg?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/releases/8.3/en.php)
+[![Yii 2.0.x](https://img.shields.io/badge/2.0.55-0073AA.svg?style=for-the-badge&logo=yii&logoColor=white)](https://github.com/yiisoft/yii2/tree/2.0.55)
 [![Yii 22.0.x](https://img.shields.io/badge/22.0.x-0073AA.svg?style=for-the-badge&logo=yii&logoColor=white)](https://github.com/yiisoft/yii2/tree/22.0)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yii2-extensions/road-runner.svg?style=for-the-badge&logo=packagist&logoColor=white&label=Stable)](https://packagist.org/packages/yii2-extensions/road-runner)
 [![Total Downloads](https://img.shields.io/packagist/dt/yii2-extensions/road-runner.svg?style=for-the-badge&logo=composer&logoColor=white&label=Downloads)](https://packagist.org/packages/yii2-extensions/road-runner)
