@@ -1,7 +1,13 @@
-# Generated coverage output, runtime state, caches, and dependencies.
-.phpunit.cache/**
+# Local agent aliases and private maintenance files.
+.agents/**
+.claude/**
+internal/**
+
+# Generated coverage output and runtime state.
 code_coverage/**
 runtime/**
+
+# Dependencies.
 vendor/**
 
 # Dependency lockfile ignored by git.
@@ -9,6 +15,3 @@ composer.lock
 
 # License texts ship verbatim.
 **/LICENSE*
-
-# Tool config maintained by hand to keep array order meaningful.
-composer-require-checker.json

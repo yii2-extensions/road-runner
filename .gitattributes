@@ -22,6 +22,10 @@
 *.ttf  binary
 
 # Exclude files from the archive
+/.agents                        export-ignore
+/.claude                        export-ignore
+/AGENTS.md                      export-ignore
+/internal                       export-ignore
 /.editorconfig                  export-ignore
 /.gitattributes                 export-ignore
 /.github                        export-ignore

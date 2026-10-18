@@ -14,10 +14,13 @@ use Psr\Http\Message\{
 };
 use Spiral\RoadRunner\Http\PSR7WorkerInterface;
 use Spiral\RoadRunner\WorkerInterface;
+use Yii;
+use yii\base\{ErrorHandler, Event};
 use yii\caching\FileCache;
+use yii\di\Container;
 use yii\helpers\ArrayHelper;
 use yii\log\FileTarget;
-use yii\web\{IdentityInterface, JsonParser};
+use yii\web\{IdentityInterface, JsonParser, Session};
 use yii2\extensions\psrbridge\http\Application;
 
 use function dirname;
@@ -47,15 +50,17 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @phpstan-param array{
      *   id?: string,
+     *   useSession?: bool,
      *   basePath?: string,
      *   components?: array<string, array<string, mixed>>,
      *   container?: array{definitions?: array<string, mixed>},
      *   runtimePath?: string,
      *   vendorPath?: string
      * } $config
+     * @phpstan-param class-string<Application<IdentityInterface>> $applicationClass
      * @phpstan-return Application<IdentityInterface>
      */
-    protected function application(array $config = []): Application
+    protected function application(array $config = [], string $applicationClass = Application::class): Application
     {
         /** @phpstan-var array<string, mixed> $configApplication */
         $configApplication = ArrayHelper::merge(
@@ -112,6 +117,28 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $config,
         );
 
-        return new Application($configApplication);
+        return new $applicationClass($configApplication);
+    }
+
+    protected function tearDown(): void
+    {
+        if (Yii::$app !== null) {
+            $session = Yii::$app->get('session', false);
+            $errorHandler = Yii::$app->get('errorHandler', false);
+
+            if ($session instanceof Session) {
+                $session->close();
+            }
+
+            if ($errorHandler instanceof ErrorHandler) {
+                $errorHandler->unregister();
+            }
+        }
+
+        Event::offAll();
+
+        Yii::$container = new Container();
+
+        parent::tearDown();
     }
 }
