@@ -187,7 +187,7 @@ final class FileController extends \yii\web\Controller
 
         if ($file !== null && $file->error === UPLOAD_ERR_OK) {
             // validate the file before saving; choose a server-controlled storage name
-            $file->saveAs('@runtime/uploads/avatar.bin');
+            $file->saveAs('@runtime/uploads/' . bin2hex(random_bytes(16)) . '.bin');
         }
 
         return $this->asJson(['status' => 'uploaded']);
