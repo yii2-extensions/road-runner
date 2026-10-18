@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.4.0 Under development
+## 0.4.0 October 18, 2026
 
 - docs(changelog): convert changelog entries to Conventional Commits format.
 - fix: complete the Yii response lifecycle after RoadRunner emits PSR responses and update `yii2-extensions/psr-bridge` to `0.4`.
