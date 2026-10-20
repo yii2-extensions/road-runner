@@ -34,9 +34,4 @@ vendor/bin/rr get
 Use the binary's version output to verify the selected version. The Composer packages alone do not start the server.
 Keep PHP output on the worker's protocol channel free of `echo`, debug dumps, and accidental output.
 
-## Next steps
-
-- [Configuration](configuration.md)
-- [Testing](testing.md)
-- [Upgrade actions](../UPGRADE.md)
-- [Agent skill installation](agents.md)
+[Back to documentation](../README.md#documentation)

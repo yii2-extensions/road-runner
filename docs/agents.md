@@ -6,6 +6,23 @@ or start the server.
 
 ## Install in an application
 
+### Automatic Composer installation
+
+Complete the [one-time application setup](https://yii2-framework.github.io/docs/project/ai-agents/#composer-installation) to enable `llm/skills`
+and set `auto-sync` to `true` in `skills.json`. Approve `yii2-extensions/road-runner` explicitly in
+`dependencies.composer.trusted`.
+The installed package must include its skill bundle; its `extra.skills.source` declares the directory.
+
+```bash
+composer install
+composer skills:show
+```
+
+With `auto-sync` enabled, later dependency installs and updates synchronize the skill automatically; no per-skill
+installer is required. If `auto-sync` is `false`, run `composer skills:update` after dependency installation or updates.
+
+### Optional npx installation
+
 Run from the application's root, selecting the clients you use:
 
 ```bash
@@ -43,3 +60,5 @@ functional application tests are separate evidence. Automatic selection depends 
 
 The skill routes to the relevant package guide or upstream Markdown at the installed revision. It needs no private
 maintainer tools. Finish with [package and runtime checks](testing.md#worker-compatibility-checks).
+
+[Back to documentation](../README.md#documentation)

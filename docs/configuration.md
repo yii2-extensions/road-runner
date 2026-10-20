@@ -443,10 +443,6 @@ if (YII_ENV_DEV) {
 return $config;
 ```
 
-## Next steps
-
-- 🧪 [Testing Guide](testing.md)
-
 ### DELETE form bodies
 
 RoadRunner 2025.1.15 with HTTP plugin v5.3.0 drops URL-encoded DELETE fields before sending the request to PHP.
@@ -457,3 +453,5 @@ Method override changes the wire method and must be part of the endpoint and pro
 Keep native body processing enabled when using multipart uploads. In this runtime version, enabling `raw_body`
 also bypasses multipart form and upload processing. Native DELETE URL-encoded clients require a runtime whose
 form handling has been verified to preserve their fields.
+
+[Back to documentation](../README.md#documentation)
