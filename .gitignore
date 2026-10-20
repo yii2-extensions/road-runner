@@ -41,6 +41,9 @@ package-lock.json
 .phpunit.cache
 .phpunit.result.cache
 
+# private maintainer files (if present)
+/internal/
+
 # vagrant (if present)
 .vagrant
 
@@ -57,6 +60,3 @@ Thumbs.db
 .buildpath
 .project
 .settings
-
-# Private maintainer files
-/internal/
