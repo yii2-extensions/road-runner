@@ -11,6 +11,33 @@ Tool references:
 - [PHPUnit](https://phpunit.de/) for unit tests.
 - [Rector](https://github.com/rectorphp/rector) for automated refactoring.
 
+## Repository quality checks
+
+Make the CLI tools used by the shared quality workflow available on `PATH`:
+actionlint with its ShellCheck helper, codespell, EditorConfig Checker, markdownlint-cli2, Prettier and
+yamllint. The command reads the repository's linter, formatter and ignore files. It skips ignored local dependency, runtime and private artifact trees that are absent from a clean CI checkout.
+
+```bash
+composer quality
+```
+
+## Workflow security checks
+
+Make zizmor and Gitleaks available on `PATH`. Audit the current workflow files
+with the same pedantic persona used by the shared security workflow:
+
+```bash
+composer zizmor
+```
+
+Run that audit and scan Git history with the repository's Gitleaks configuration:
+
+```bash
+composer security
+```
+
+Zizmor's online audits require GitHub API access. Report offline limitations separately; do not count a skipped audit as passed.
+
 ## Automated refactoring (Rector)
 
 Run Rector to apply automated code refactoring.
@@ -20,6 +47,14 @@ composer rector
 ```
 
 ## Coding standards (ECS)
+
+Check standards without changing files:
+
+```bash
+composer ecs-check
+```
+
+`composer ecs` applies fixes. Review its changes before keeping them.
 
 Run Easy Coding Standard (ECS) and apply fixes.
 
@@ -103,3 +138,5 @@ Verify response bytes and status, after-send ordering, and worker replacement af
 request enters application handling once and the first request after replacement succeeds. Record the
 binary version and dependency revisions. If the binary or application fixture is unavailable, report that runtime
 check as pending rather than treating mocked transport tests as server validation.
+
+[Back to documentation](../README.md#documentation)
