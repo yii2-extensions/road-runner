@@ -9,8 +9,8 @@ scenarios.
 
 ### HTTP worker and message factories
 
-Register the RoadRunner worker and all four PSR factories in the configuration passed to the bridge application.
-For HttpSoft:
+Register the RoadRunner worker and all four PSR factories in the configuration passed to the bridge application. For
+HttpSoft:
 
 ```php
 use HttpSoft\Message\{ResponseFactory, ServerRequestFactory, StreamFactory, UploadedFileFactory};
@@ -76,36 +76,36 @@ $runner = new RoadRunner($app);
 
 #### Response lifecycle and recycling
 
-For each request the runner calls `Application::handle()`, passes the returned PSR response to `respond()`, and
-calls `finalize()` exactly once in `finally`. Successful emission triggers Yii after-send processing; failed
-processing or emission finalizes with `false` and reports the error to RoadRunner. A failure from finalization
-is retained while the worker shuts down, then propagates without reporting a second request outcome. If shutdown
-also fails, its exception remains available through `getPrevious()`.
+For each request the runner calls `Application::handle()`, passes the returned PSR response to `respond()`, and calls
+`finalize()` exactly once in `finally`. Successful emission triggers Yii after-send processing; failed processing or
+emission finalizes with `false` and reports the error to RoadRunner. A failure from finalization is retained while the
+worker shuts down, then propagates without reporting a second request outcome. If shutdown also fails, its exception
+remains available through `getPrevious()`.
 
-After success or a reported request failure, `clean()` checks whether allocated memory reached 90% of the
-configured threshold. When recycling is needed, the runner declines the next pending dispatch with `stop()`
-before application handling, so RoadRunner can retry it in a fresh worker. The loop then waits for RoadRunner's
-stop command. `clean()` is a memory check, not a general test of request isolation.
+After success or a reported request failure, `clean()` checks whether allocated memory reached 90% of the configured
+threshold. When recycling is needed, the runner declines the next pending dispatch with `stop()` before application
+handling, so RoadRunner can retry it in a fresh worker. The loop then waits for RoadRunner's stop command. `clean()` is
+a memory check, not a general test of request isolation.
 
-Keep response streams open until `respond()` finishes. For large seekable downloads, configure
-`PSR7Worker::$chunkSize` instead of casting the entire response body to a string. Keep the default buffered output
-for non-seekable bodies such as pipes, because the HTTP worker rewinds bodies before streaming.
+Keep response streams open until `respond()` finishes. For large seekable downloads, configure `PSR7Worker::$chunkSize`
+instead of casting the entire response body to a string. Keep the default buffered output for non-seekable bodies such
+as pipes, because the HTTP worker rewinds bodies before streaming.
 
-If the streaming emitter consumes a body-read failure, the runner still finalizes with `false`, skips after-send,
-and recycles the worker before propagating the original exception. A partial response cannot be replaced with a
-second outcome. If closing the failed stream also throws, the runner finalizes with `false` and propagates the
-read and transport failures immediately; it does not submit another outcome or reuse the failed transport.
+If the streaming emitter consumes a body-read failure, the runner still finalizes with `false`, skips after-send, and
+recycles the worker before propagating the original exception. A partial response cannot be replaced with a second
+outcome. If closing the failed stream also throws, the runner finalizes with `false` and propagates the read and
+transport failures immediately; it does not submit another outcome or reuse the failed transport.
 
-The loop releases its local response and body references before waiting for the next dispatch. A pending
-exception can still retain a body through captured arguments when `zend.exception_ignore_args` is disabled.
-Those references remain until the exception is released; the runner preserves the original exception and its
-trace instead of changing PHP configuration or discarding diagnostic information.
+The loop releases its local response and body references before waiting for the next dispatch. A pending exception can
+still retain a body through captured arguments when `zend.exception_ignore_args` is disabled. Those references remain
+until the exception is released; the runner preserves the original exception and its trace instead of changing PHP
+configuration or discarding diagnostic information.
 
 ### Cookies, lazy sessions, and persistent components
 
-Preserve request cookie validation and provide its secret key through the application's secret configuration.
-Disable PHP's automatic session cookies before opening a session so the bridge can emit them through the PSR
-response. For example, after configuring the request key:
+Preserve request cookie validation and provide its secret key through the application's secret configuration. Disable
+PHP's automatic session cookies before opening a session so the bridge can emit them through the PSR response. For
+example, after configuring the request key:
 
 ```php
 $config['components']['session']['useCookies'] = false;
@@ -115,9 +115,9 @@ $config['persistentComponents'] = ['db', 'cache'];
 ```
 
 `useSession=false` skips eager opening around bootstrap. The bridge still closes a previous active session and
-synchronizes the current validated cookie ID, or clears it when missing, malformed, or tampered with. It does not
-turn off session support, CSRF protection, or cookie validation. Keep `request`, `response`, `errorHandler`,
-`session`, and `user` out of `persistentComponents`.
+synchronizes the current validated cookie ID, or clears it when missing, malformed, or tampered with. It does not turn
+off session support, CSRF protection, or cookie validation. Keep `request`, `response`, `errorHandler`, `session`, and
+`user` out of `persistentComponents`.
 
 Use the bridge's `http\UploadedFile` for model uploads. Upload state resets before each request, including when
 `resetUploadedFiles=false`. Validate uploaded content and choose storage names in application code.
@@ -445,13 +445,13 @@ return $config;
 
 ### DELETE form bodies
 
-RoadRunner 2025.1.15 with HTTP plugin v5.3.0 drops URL-encoded DELETE fields before sending the request to PHP.
-The PHP adapter cannot recover those fields. JSON DELETE bodies work with a configured JSON parser; applications
-that explicitly support method override can accept POST with `_method=DELETE` or `X-Http-Method-Override: DELETE`.
-Method override changes the wire method and must be part of the endpoint and proxy policy.
+RoadRunner 2025.1.15 with HTTP plugin v5.3.0 drops URL-encoded DELETE fields before sending the request to PHP. The PHP
+adapter cannot recover those fields. JSON DELETE bodies work with a configured JSON parser; applications that explicitly
+support method override can accept POST with `_method=DELETE` or `X-Http-Method-Override: DELETE`. Method override
+changes the wire method and must be part of the endpoint and proxy policy.
 
-Keep native body processing enabled when using multipart uploads. In this runtime version, enabling `raw_body`
-also bypasses multipart form and upload processing. Native DELETE URL-encoded clients require a runtime whose
-form handling has been verified to preserve their fields.
+Keep native body processing enabled when using multipart uploads. In this runtime version, enabling `raw_body` also
+bypasses multipart form and upload processing. Native DELETE URL-encoded clients require a runtime whose form handling
+has been verified to preserve their fields.
 
 [Back to documentation](../README.md#documentation)

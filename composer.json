@@ -2,6 +2,7 @@
     "name": "yii2-extensions/road-runner",
     "type": "library",
     "description": "High-performance RoadRunner runtime for Yii2 applications.",
+    "homepage": "https://yii2-framework.github.io/docs/extensions/road-runner/",
     "keywords": [
         "yii2-extension",
         "roadrunner",
@@ -10,6 +11,11 @@
         "psr-7"
     ],
     "license": "BSD-3-Clause",
+    "support": {
+        "docs": "https://yii2-framework.github.io/docs/extensions/road-runner/",
+        "issues": "https://github.com/yii2-extensions/road-runner/issues",
+        "source": "https://github.com/yii2-extensions/road-runner"
+    },
     "authors": [
         {
             "name": "Wilmer Arambula",
