@@ -8,7 +8,7 @@
   and let its errors propagate. Request worker shutdown only before calling `handle()` for a pending dispatch.
 - Remove request, response, error handler, session and user instances from `persistentComponents`.
 - With lazy sessions, a missing, invalid or tampered cookie clears the previous request's session ID. Disable native
-  session cookies and keep Yii cookie validation with a secret key.
+  session cookies before any session opens, and keep Yii cookie validation with a secret key.
 
 ## 0.2.0
 
