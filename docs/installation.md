@@ -19,8 +19,8 @@ composer require yii2-extensions/road-runner:^0.4 httpsoft/http-message
 Keep Composer's advisory blocking enabled. Review the resolved dependencies, retain `composer.lock`, and run
 `composer audit`. Do not disable advisory checks to force an older Yii installation.
 
-Register the [HTTP worker and message factories](configuration.md#http-worker-and-message-factories), configure
-cookies and sessions, and create the [entry point and `.rr.yaml`](../README.md#basic-usage).
+Register the [HTTP worker and message factories](configuration.md#http-worker-and-message-factories), configure cookies
+and sessions, and create the [entry point and `.rr.yaml`](../README.md#basic-usage).
 
 ## Start RoadRunner
 

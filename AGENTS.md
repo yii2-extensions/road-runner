@@ -4,12 +4,12 @@
 - Use PHP 8.3+ and verify both supported Yii lines: `~2.0.55 || ^22.0@dev`.
 - Read `composer.json`, `src/RoadRunner.php`, and the installed PSR Bridge lifecycle before changing integration code.
 - Keep `handle()` -> RoadRunner emission -> exactly one `finalize(success)` per attempt. Finalization errors must
-  propagate after the shutdown handshake without a second response or worker error report. Preserve shutdown
-  errors as the previous exception. Check memory after success and reported failures; decline the next pending
-  dispatch before application handling when recycling.
+  propagate after the shutdown handshake without a second response or worker error report. Preserve shutdown errors as
+  the previous exception. Check memory after success and reported failures; decline the next pending dispatch before
+  application handling when recycling.
 - Preserve request isolation in the bridge; never retain request, response, error handler, session, or user instances.
-- Run the package tests and applicable static/style checks. Distinguish mocked transport coverage from a real
-  RoadRunner smoke test; report unavailable runtime checks.
+- Run the package tests and applicable static/style checks. Distinguish mocked transport coverage from a real RoadRunner
+  smoke test; report unavailable runtime checks.
 - Keep English PHPDoc concise and refer to existing examples instead of duplicating them in class headers.
 - Preserve README branding, badges, examples, and useful links. Keep installation concise and UPGRADE limited to
   incompatibilities and user actions. Append CHANGELOG entries to the relevant section.
