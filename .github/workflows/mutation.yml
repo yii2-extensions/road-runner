@@ -17,12 +17,12 @@ permissions:
 
 jobs:
   mutation:
-    uses: yii2-framework/actions/.github/workflows/infection.yml@f0e06ea5cc965cff4431177d448add7b7c98668b # v2.0.1
+    uses: yii2-framework/actions/.github/workflows/infection.yml@4873e17a5d41412f13a94a616bc9d4b7eb66b93b # v2.0.3
     with:
       command-options: --threads=max
       extensions: mbstring, sockets, sodium
       php-ini-values: date.timezone=UTC, memory_limit=-1
-      php-version: '["8.3"]'
+      php-version: '[8.3]'
       phpstan: true
     secrets:
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

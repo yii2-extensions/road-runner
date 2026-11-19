@@ -1,0 +1,4 @@
+interface:
+  display_name: "Yii2 RoadRunner Worker"
+  short_description: "Run Yii PSR Bridge apps in RoadRunner workers"
+  default_prompt: "Use $yii2-roadrunner-worker to integrate yii2-extensions/road-runner with a Yii PSR Bridge application."
