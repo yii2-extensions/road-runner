@@ -62,4 +62,34 @@ application tests are separate evidence. Automatic selection depends on the clie
 The skill routes to the relevant package guide or upstream Markdown at the installed revision. It needs no private
 maintainer tools. Finish with [package and runtime checks](testing.md#worker-compatibility-checks).
 
+## Example prompts
+
+Start a fresh client session at the application root. The explicit example uses Codex's `$skill-name` notation; use
+`/yii2-roadrunner-worker` in Claude Code or the installed client's native skill mechanism. Do not paste the skill body
+and count that as native activation. These are tasks to execute and verify, not claims that an evaluation has passed.
+
+### Explicit invocation
+
+```text
+$yii2-roadrunner-worker
+Review a RoadRunner worker using the installed bridge and factory interfaces. Show how to test one finalization per
+attempt and recycling before a pending dispatch is handled, without writing protocol-corrupting output to stdout.
+Inspect the installed revision first. Do not install dependencies or change files without authorization.
+```
+
+### Natural selection
+
+```text
+An after-send callback throws in my RoadRunner worker. How can I check that the request is not emitted or finalized
+twice and that shutdown failures remain observable?
+```
+
+### Verify the outcome
+
+Use observable call ordering and failure assertions, then run a native worker test when available. Mocked transport
+coverage is not native runtime proof. Record native loading evidence separately from configuration review, executable
+checks and browser/runtime results. For a negative selection control, ask an unrelated question in a fresh session and
+confirm this package skill is not loaded. Keep evaluation traces private; report unavailable checks rather than treating
+discovery as execution.
+
 [Back to documentation](../README.md#documentation)
