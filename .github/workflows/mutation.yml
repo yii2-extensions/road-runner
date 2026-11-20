@@ -22,7 +22,7 @@ jobs:
       command-options: --threads=max
       extensions: mbstring, sockets, sodium
       php-ini-values: date.timezone=UTC, memory_limit=-1
-      php-version: '[8.3]'
+      php-version: "[8.3]"
       phpstan: true
     secrets:
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
