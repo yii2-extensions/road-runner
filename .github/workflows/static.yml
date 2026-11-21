@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   phpstan:
-    uses: yii2-framework/actions/.github/workflows/phpstan.yml@4873e17a5d41412f13a94a616bc9d4b7eb66b93b # v2.0.3
+    uses: yii2-framework/actions/.github/workflows/phpstan.yml@d567d034022e972af3a14f4740d98b46e56ba593 # v2.0.4
     with:
-      ignore-platform-reqs: ${{ matrix.php-version == '8.6' }}
+      ignore-platform-reqs-php-version: "[8.6]"
       extensions: sodium

@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   scorecard:
-    uses: yii2-framework/actions/.github/workflows/scorecard.yml@4873e17a5d41412f13a94a616bc9d4b7eb66b93b # v2.0.3
+    uses: yii2-framework/actions/.github/workflows/scorecard.yml@d567d034022e972af3a14f4740d98b46e56ba593 # v2.0.4
     permissions:
       contents: read # Required to check out the repository.
       id-token: write # Required to sign published results with the GitHub OIDC token.

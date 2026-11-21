@@ -17,11 +17,11 @@ permissions:
 
 jobs:
   mutation:
-    uses: yii2-framework/actions/.github/workflows/infection.yml@4873e17a5d41412f13a94a616bc9d4b7eb66b93b # v2.0.3
+    uses: yii2-framework/actions/.github/workflows/infection.yml@d567d034022e972af3a14f4740d98b46e56ba593 # v2.0.4
     with:
       command-options: --threads=max
       extensions: mbstring, sockets, sodium
-      ignore-platform-reqs: ${{ matrix.php-version == '8.6' }}
+      ignore-platform-reqs-php-version: "[8.6]"
       php-ini-values: date.timezone=UTC, memory_limit=-1
       php-version: "[8.3]"
       phpstan: true
