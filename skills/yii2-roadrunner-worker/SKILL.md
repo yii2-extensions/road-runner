@@ -1,6 +1,6 @@
 ---
 name: yii2-roadrunner-worker
-description: Integrate yii2-extensions/road-runner with a Yii PSR Bridge application, including worker factories, response finalization, request isolation, and runtime checks.
+description: Integrate yii2-extensions/road-runner with a Yii PSR Bridge application, including worker factories, response finalization, streaming failures, memory recycling, request isolation, and runtime checks. Not for FrankenPHP or other runtimes, Yii applications served without the bridge, RoadRunner server plugin tuning beyond the worker entry point, or changes to this package's own source.
 license: BSD-3-Clause
 ---
 
@@ -53,15 +53,42 @@ model uploads and validate files before saving to server-controlled paths.
 
 `RoadRunner::run()` owns `handle(request)` -> `respond(response)` -> `finalize(success)`. Do not wrap it in another
 finalizer or invoke Yii response `send()`. Finalization runs once in `finally`, with success set only after `respond()`
-returns. A processing or emission error is reported through the worker; finalization errors propagate after the shutdown
-handshake without another response or error report. A shutdown failure remains available as the previous exception.
-Memory is checked after success and reported failures.
+returns without a retained stream failure. Failures that escape `handle()` or `respond()` go to the worker's `error()`
+unless `respond()` throws a different exception while a stream read failure is already retained. In that case, the
+runner calls `finalize(false)` and exits without reporting an error or performing the shutdown handshake. The retained
+read failure propagates unless finalization also fails, in which case the finalization error is primary.
+
+On the normal recycling path, finalization errors propagate after the shutdown handshake without a second response or
+error report. A shutdown failure stays in the propagated exception's previous chain. Memory is checked after success and
+reported failures.
 
 Keep streams alive until emission finishes; use the PSR worker's `chunkSize` when streaming large bodies. A `clean()`
-result of `true` means memory reached its threshold. Mark the worker for recycling, then decline the next pending
-dispatch with `stop()` before application handling so RoadRunner can retry it in another worker. Continue receiving
-until RoadRunner sends its stop command. Keep worker stdout free of application output that could corrupt the transport
-protocol.
+result of `true` means allocated memory reached 90% of the limit (`setMemoryLimit()` or PHP `memory_limit`). Mark the
+worker for recycling, then decline each pending dispatch with `stop()` before application handling so RoadRunner can
+retry it in another worker. Continue receiving until `waitRequest()` returns `null`. Keep worker stdout free of
+application output that could corrupt the transport protocol.
+
+## Intended behavior
+
+These look like bugs and are package contracts; do not "fix" them in the runner or the application:
+
+- On the normal recycling path, `run()` keeps looping and calls `stop()` for every later dispatch without handling it,
+  until `waitRequest()` returns `null`. It does not exit early or handle one more request.
+- A finalization failure, such as an after-send handler that throws, is not reported through `error()` and sends no
+  second response. `run()` propagates it instead of returning `0` (`ServerExitCode::OK`).
+- A stream `read()` or `eof()` failure after the first chunk was sent is consumed by RoadRunner's chunked emitter.
+  `ResponseBody` retains it, the attempt is finalized with `false`, memory is not checked, and the exception is rethrown
+  after the shutdown handshake if `respond()` returns. If emitting the closing frame also throws, the runner skips the
+  handshake and keeps that transport failure in the read exception's chain. In either case, a finalization failure on
+  the same attempt becomes primary with the read failure as its previous exception. A failure before any chunk escapes
+  `respond()` and is reported through `error()`.
+- The worker error text is `['<class>'] '<message>' in '<file>:<line>'`, a `Stack trace:` line and the quoted trace.
+  Keep that format; it is the adapter's diagnostic contract.
+- The bridge's `handle()` renders action exceptions as error responses, so `error()` is reserved for failures that
+  escape `handle()` or `respond()`.
+
+`ResponseBody` is the stream decorator the runner wraps around each response body; it delegates every `StreamInterface`
+call and only records `read()` and `eof()` failures. Applications do not construct it.
 
 ## Verify the result
 
