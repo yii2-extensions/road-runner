@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   security:
-    uses: yii2-framework/actions/.github/workflows/security.yml@d567d034022e972af3a14f4740d98b46e56ba593 # v2.0.4
+    uses: yii2-framework/actions/.github/workflows/security.yml@e3e99bd1c54fb350911bf446690e6146acf7660d # v2.0.6
     permissions:
       contents: read
     with:
